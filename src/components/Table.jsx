@@ -1,4 +1,3 @@
-import * as React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -6,18 +5,88 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
+import { IconButton } from "@mui/material";
+import { Delete, Edit } from "@mui/icons-material";
+import styled from "@emotion/styled";
 
 const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
+  {
+    _id: "601",
+    identification: "1234561",
+    name: "John",
+    lastName: "Doe",
+  },
+  {
+    _id: "602",
+    identification: "1234562",
+    name: "Jane",
+    lastName: "Smith",
+  },
+  {
+    _id: "603",
+    identification: "1234563",
+    name: "Michael",
+    lastName: "Johnson",
+  },
+  {
+    _id: "604",
+    identification: "1234564",
+    name: "Emily",
+    lastName: "Williams",
+  },
+  {
+    _id: "605",
+    identification: "1234565",
+    name: "Robert",
+    lastName: "Brown",
+  },
+  {
+    _id: "606",
+    identification: "1234566",
+    name: "Linda",
+    lastName: "Jones",
+  },
+  {
+    _id: "607",
+    identification: "1234567",
+    name: "James",
+    lastName: "Miller",
+  },
+  {
+    _id: "608",
+    identification: "1234568",
+    name: "Patricia",
+    lastName: "Davis",
+  },
+  {
+    _id: "609",
+    identification: "1234569",
+    name: "Mary",
+    lastName: "Garcia",
+  },
+  {
+    _id: "610",
+    identification: "12345610",
+    name: "William",
+    lastName: "Rodriguez",
+  },
 ];
+
+const HeadCell = styled(TableCell)(() => ({
+  paddingBlock: 10,
+  paddingInline: 20,
+  backgroundColor: "#1975ff",
+  color: "#fff",
+  fontSize: "1rem",
+  border: "1px solid #fff",
+}));
+
+const BodyCell = styled(TableCell)(() => ({
+  color: "#aaa5bd",
+  paddingBlock: 5,
+  paddingInline: 20,
+  border: "1px solid #eef0f2",
+}));
 
 export default function BasicTable() {
   return (
@@ -25,26 +94,29 @@ export default function BasicTable() {
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <HeadCell>Identificación</HeadCell>
+            <HeadCell align="left">Nombre completo</HeadCell>
+            <HeadCell align="left">Acciones</HeadCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rows.map(({ _id, identification, name, lastName }, index) => (
             <TableRow
-              key={row.name}
+              key={_id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
+              <BodyCell component="th" scope="row">
+                {identification}
+              </BodyCell>
+              <BodyCell align="left">{`${name} ${lastName}`}</BodyCell>
+              <BodyCell align="left">
+                <IconButton>
+                  <Edit />
+                </IconButton>
+                <IconButton>
+                  <Delete />
+                </IconButton>
+              </BodyCell>
             </TableRow>
           ))}
         </TableBody>

@@ -1,3 +1,5 @@
+import Welcome from "./Welcome";
 import ClientsCRUD from "./ClientsCRUD";
+import ClientMaintenance from "./ClientMaintenance";
 
-export { ClientsCRUD };
+export { Welcome, ClientsCRUD, ClientMaintenance };

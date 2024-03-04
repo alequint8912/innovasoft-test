@@ -1,10 +1,14 @@
 import Layout from "layout/MainLayout/Layout";
-import { ClientsCRUD } from "pages";
+import { ClientsCRUD, ClientMaintenance, Welcome } from "pages";
 
 const mainRoutes = {
   path: "/",
   element: <Layout />,
-  children: [{ path: "/", element: <ClientsCRUD /> }],
+  children: [
+    { path: "/", element: <Welcome /> },
+    { path: "/clients", element: <ClientsCRUD /> },
+    { path: "/clients/:clientId", element: <ClientMaintenance /> },
+  ],
 };
 
 export default mainRoutes;

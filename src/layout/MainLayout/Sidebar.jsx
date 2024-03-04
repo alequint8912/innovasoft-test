@@ -13,6 +13,7 @@ import { useTheme } from "@mui/material/styles";
 import { styled } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
 import UserIcon from "../../assets/images/user-svgrepo-com.svg";
+import { Link } from "react-router-dom";
 
 const ItemsContainer = styled(Box)(() => ({
   width: "100%",
@@ -78,17 +79,23 @@ const Sidebar = ({ drawerWidth, handleDrawerClose, open }) => {
       <Divider />
       <List>
         {[
-          { label: "INICIO", iconText: "IN" },
-          { label: "Consulta clientes", iconText: "CC" },
-        ].map(({ label, iconText }, index) => (
-          <ListItem key={label} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                <Typography color={"#1976d2"}>{iconText}</Typography>
-              </ListItemIcon>
-              <ListItemText primary={label} />
-            </ListItemButton>
-          </ListItem>
+          { label: "INICIO", iconText: "IN", path: "/" },
+          { label: "Consulta clientes", iconText: "CC", path: "/clients" },
+        ].map(({ label, iconText, path }) => (
+          <Link
+            to={path}
+            key={label}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <ListItem disablePadding>
+              <ListItemButton>
+                <ListItemIcon>
+                  <Typography color={"#1976d2"}>{iconText}</Typography>
+                </ListItemIcon>
+                <ListItemText primary={label} />
+              </ListItemButton>
+            </ListItem>
+          </Link>
         ))}
       </List>
     </Drawer>
