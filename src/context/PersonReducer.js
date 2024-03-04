@@ -10,14 +10,16 @@ export default function appReducer(state, action) {
       return {
         ...state,
         persons: state.persons.map((person) =>
-          person.id === action.payload.id ? action.payload : person
+          person._id === action.payload._id ? action.payload : person
         ),
         loadingPersons: false,
       };
     case "REMOVE_PERSON":
       return {
         ...state,
-        persons: state.persons.filter((person) => person.id !== action.payload),
+        persons: state.persons.filter(
+          (person) => person._id !== action.payload
+        ),
         loadingPersons: false,
       };
     case "GET_PERSONS_SUCCESS":

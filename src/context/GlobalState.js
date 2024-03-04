@@ -9,7 +9,7 @@ const initialState = {
 
 const mockPersons = [
   {
-    id: "605c72ef1234567890abcdef",
+    _id: "605c72ef1234567890abcdef",
     nombre: "John",
     apellidos: "Doe",
     identificacion: "JD1234567890",
@@ -24,7 +24,7 @@ const mockPersons = [
     interesesId: "605c72ef1234567890abcde0",
   },
   {
-    id: "605c72ef1234567890abcde1",
+    _id: "605c72ef1234567890abcde1",
     nombre: "Jane",
     apellidos: "Doe",
     identificacion: "JD1234567891",
@@ -39,7 +39,7 @@ const mockPersons = [
     interesesId: "605c72ef1234567890abcde2",
   },
   {
-    id: "605c72ef1234567890abcde3",
+    _id: "605c72ef1234567890abcde3",
     nombre: "Alice",
     apellidos: "Smith",
     identificacion: "AS1234567893",
@@ -54,7 +54,7 @@ const mockPersons = [
     interesesId: "605c72ef1234567890abcde4",
   },
   {
-    id: "605c72ef1234567890abcde5",
+    _id: "605c72ef1234567890abcde5",
     nombre: "Bob",
     apellidos: "Johnson",
     identificacion: "BJ1234567894",
@@ -69,7 +69,7 @@ const mockPersons = [
     interesesId: "605c72ef1234567890abcde6",
   },
   {
-    id: "605c72ef1234567890abcde7",
+    _id: "605c72ef1234567890abcde7",
     nombre: "Charlie",
     apellidos: "Brown",
     identificacion: "CB1234567897",
@@ -84,7 +84,7 @@ const mockPersons = [
     interesesId: "605c72ef1234567890abcde8",
   },
   {
-    id: "605c72ef1234567890abcde9",
+    _id: "605c72ef1234567890abcde9",
     nombre: "Diana",
     apellidos: "Jones",
     identificacion: "DJ1234567899",
@@ -99,7 +99,7 @@ const mockPersons = [
     interesesId: "605c72ef1234567890abcde10",
   },
   {
-    id: "605c72ef1234567890abcde11",
+    _id: "605c72ef1234567890abcde11",
     nombre: "Eve",
     apellidos: "Miller",
     identificacion: "EM12345678911",
@@ -114,7 +114,7 @@ const mockPersons = [
     interesesId: "605c72ef1234567890abcde12",
   },
   {
-    id: "605c72ef1234567890abcde13",
+    _id: "605c72ef1234567890abcde13",
     nombre: "Frank",
     apellidos: "Davis",
     identificacion: "FD12345678913",
@@ -129,7 +129,7 @@ const mockPersons = [
     interesesId: "605c72ef1234567890abcde14",
   },
   {
-    id: "605c72ef1234567890abcde15",
+    _id: "605c72ef1234567890abcde15",
     nombre: "Grace",
     apellidos: "Wilson",
     identificacion: "GW12345678915",
@@ -144,7 +144,7 @@ const mockPersons = [
     interesesId: "605c72ef1234567890abcde16",
   },
   {
-    id: "605c72ef1234567890abcde17",
+    _id: "605c72ef1234567890abcde17",
     nombre: "Harry",
     apellidos: "Moore",
     identificacion: "HM12345678917",

@@ -7,9 +7,10 @@ import CardContent from "@mui/material/CardContent";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SearchIcon from "@mui/icons-material/Search";
-import BasicTable from "components/Table";
+import ClientsTable from "components/Table";
 import { GlobalContext } from "context/GlobalState";
 import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Content = styled(CardContent)(() => ({
   // paddingInline: 0,
@@ -60,14 +61,17 @@ const FilterButton = styled(IconButton)(() => ({
 }));
 
 const ClientsCRUD = () => {
-  const {
-    persons,
-    loadingPersons,
-    addPerson,
-    editPerson,
-    removePerson,
-    getPersons,
-  } = useContext(GlobalContext);
+  const { persons, loadingPersons, getPersons } = useContext(GlobalContext);
+
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate("/");
+  };
+
+  const handleAddPerson = () => {
+    navigate("/clients/0");
+  };
 
   useEffect(() => {
     if (!persons) getPersons();
@@ -79,10 +83,18 @@ const ClientsCRUD = () => {
         <HeadActions>
           <HeadTitle variant="h5">Consulta de clientes</HeadTitle>
           <HeadActionsContainer>
-            <ActionIcon variant="contained" startIcon={<AddIcon />}>
+            <ActionIcon
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleAddPerson}
+            >
               Agregar
             </ActionIcon>
-            <ActionIcon variant="contained" startIcon={<ArrowBackIcon />}>
+            <ActionIcon
+              variant="contained"
+              startIcon={<ArrowBackIcon />}
+              onClick={handleBack}
+            >
               Regresar
             </ActionIcon>
           </HeadActionsContainer>
@@ -102,8 +114,8 @@ const ClientsCRUD = () => {
       </FilterContent>
       <Divider />
       <TableContainer>
-        {persons ? (
-          <BasicTable persons={persons} />
+        {persons && !loadingPersons ? (
+          <ClientsTable persons={persons} />
         ) : (
           <Typography variant="h1">LOADING...</Typography>
         )}

@@ -8,69 +8,9 @@ import Paper from "@mui/material/Paper";
 import { IconButton } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import styled from "@emotion/styled";
-
-const rows = [
-  {
-    _id: "601",
-    identification: "1234561",
-    name: "John",
-    lastName: "Doe",
-  },
-  {
-    _id: "602",
-    identification: "1234562",
-    name: "Jane",
-    lastName: "Smith",
-  },
-  {
-    _id: "603",
-    identification: "1234563",
-    name: "Michael",
-    lastName: "Johnson",
-  },
-  {
-    _id: "604",
-    identification: "1234564",
-    name: "Emily",
-    lastName: "Williams",
-  },
-  {
-    _id: "605",
-    identification: "1234565",
-    name: "Robert",
-    lastName: "Brown",
-  },
-  {
-    _id: "606",
-    identification: "1234566",
-    name: "Linda",
-    lastName: "Jones",
-  },
-  {
-    _id: "607",
-    identification: "1234567",
-    name: "James",
-    lastName: "Miller",
-  },
-  {
-    _id: "608",
-    identification: "1234568",
-    name: "Patricia",
-    lastName: "Davis",
-  },
-  {
-    _id: "609",
-    identification: "1234569",
-    name: "Mary",
-    lastName: "Garcia",
-  },
-  {
-    _id: "610",
-    identification: "12345610",
-    name: "William",
-    lastName: "Rodriguez",
-  },
-];
+import { useContext } from "react";
+import { GlobalContext } from "context/GlobalState";
+import { useNavigate } from "react-router-dom";
 
 const HeadCell = styled(TableCell)(() => ({
   paddingBlock: 10,
@@ -88,7 +28,22 @@ const BodyCell = styled(TableCell)(() => ({
   border: "1px solid #eef0f2",
 }));
 
-export default function BasicTable({ persons }) {
+function ClientsTable({ persons }) {
+  const { removePerson } = useContext(GlobalContext);
+
+  const navigate = useNavigate();
+
+  const handleRemove = ({ id, name, lastName }) => {
+    if (
+      window.confirm(`Esta seguro de eliminar el usuario ${name} ${lastName}?`)
+    )
+      removePerson(id);
+  };
+
+  const handleEdit = (id) => {
+    navigate(`/clients/${id}`);
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -100,9 +55,9 @@ export default function BasicTable({ persons }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {persons.map(({ id, identificacion, nombre, apellidos }, index) => (
+          {persons.map(({ _id, identificacion, nombre, apellidos }, index) => (
             <TableRow
-              key={id}
+              key={_id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <BodyCell component="th" scope="row">
@@ -110,10 +65,14 @@ export default function BasicTable({ persons }) {
               </BodyCell>
               <BodyCell align="left">{`${nombre} ${apellidos}`}</BodyCell>
               <BodyCell align="left">
-                <IconButton>
+                <IconButton onClick={() => handleEdit(_id)}>
                   <Edit />
                 </IconButton>
-                <IconButton>
+                <IconButton
+                  onClick={() =>
+                    handleRemove({ id: _id, name: nombre, lastName: apellidos })
+                  }
+                >
                   <Delete />
                 </IconButton>
               </BodyCell>
@@ -124,3 +83,5 @@ export default function BasicTable({ persons }) {
     </TableContainer>
   );
 }
+
+export default ClientsTable;
