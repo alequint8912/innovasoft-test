@@ -7,7 +7,7 @@ import Sidebar from "./Sidebar";
 
 import Box from "@mui/material/Box";
 
-const drawerWidth = 240;
+const drawerWidth = 400;
 
 export default function PersistentDrawerLeft() {
   const [open, setOpen] = useState(false);

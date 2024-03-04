@@ -1,6 +1,6 @@
 import { styled } from "@mui/material/styles";
 import MuiBox from "@mui/material/Box";
-import { IconButton, TextField, Typography } from "@mui/material";
+import { Divider, IconButton, TextField, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -11,13 +11,14 @@ import BasicTable from "components/Table";
 
 const Content = styled(CardContent)(() => ({
   // paddingInline: 0,
-  borderBottom: "1px solid gray",
+  // borderBottom: "1px solid gray",
 }));
 
 const FilterContent = styled(CardContent)(() => ({
-  borderBottom: "1px solid gray",
+  // borderBottom: "1px solid gray",
   display: "flex",
   gap: 10,
+  alignItems: "center",
 }));
 
 const TableContainer = styled(MuiBox)(() => ({
@@ -48,6 +49,13 @@ const FilterInput = styled(TextField)(() => ({
   flex: 1,
 }));
 
+const FilterButton = styled(IconButton)(() => ({
+  border: "1px solid",
+  flexShrink: 0,
+  width: 50,
+  height: 50,
+}));
+
 const ClientsCRUD = () => {
   return (
     <Card>
@@ -64,6 +72,7 @@ const ClientsCRUD = () => {
           </HeadActionsContainer>
         </HeadActions>
       </Content>
+      <Divider />
       <FilterContent>
         <FilterInput id="outlined-name" label="Nombre" variant="outlined" />
         <FilterInput
@@ -71,10 +80,11 @@ const ClientsCRUD = () => {
           label="Identificación"
           variant="outlined"
         />
-        <IconButton aria-label="delete" disabled color="primary">
+        <FilterButton aria-label="delete" color="black">
           <SearchIcon />
-        </IconButton>
+        </FilterButton>
       </FilterContent>
+      <Divider />
       <TableContainer>
         <BasicTable />
       </TableContainer>
