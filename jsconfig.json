@@ -6,7 +6,8 @@
       "components": ["src/components"],
       "routes": ["src/routes"],
       "layout": ["src/layout"],
-      "assets": ["src/assets"]
+      "assets": ["src/assets"],
+      "context": ["src/context"]
     }
   },
   "include": ["src"]

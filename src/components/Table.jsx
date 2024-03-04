@@ -88,7 +88,7 @@ const BodyCell = styled(TableCell)(() => ({
   border: "1px solid #eef0f2",
 }));
 
-export default function BasicTable() {
+export default function BasicTable({ persons }) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -100,15 +100,15 @@ export default function BasicTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(({ _id, identification, name, lastName }, index) => (
+          {persons.map(({ id, identificacion, nombre, apellidos }, index) => (
             <TableRow
-              key={_id}
+              key={id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <BodyCell component="th" scope="row">
-                {identification}
+                {identificacion}
               </BodyCell>
-              <BodyCell align="left">{`${name} ${lastName}`}</BodyCell>
+              <BodyCell align="left">{`${nombre} ${apellidos}`}</BodyCell>
               <BodyCell align="left">
                 <IconButton>
                   <Edit />

@@ -8,6 +8,8 @@ import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SearchIcon from "@mui/icons-material/Search";
 import BasicTable from "components/Table";
+import { GlobalContext } from "context/GlobalState";
+import { useContext, useEffect } from "react";
 
 const Content = styled(CardContent)(() => ({
   // paddingInline: 0,
@@ -41,6 +43,7 @@ const HeadActionsContainer = styled(MuiBox)(() => ({
   display: "flex",
   gap: 5,
 }));
+
 const ActionIcon = styled(Button)(() => ({
   backgroundColor: "gray",
 }));
@@ -57,6 +60,19 @@ const FilterButton = styled(IconButton)(() => ({
 }));
 
 const ClientsCRUD = () => {
+  const {
+    persons,
+    loadingPersons,
+    addPerson,
+    editPerson,
+    removePerson,
+    getPersons,
+  } = useContext(GlobalContext);
+
+  useEffect(() => {
+    if (!persons) getPersons();
+  }, []);
+
   return (
     <Card>
       <Content>
@@ -86,7 +102,11 @@ const ClientsCRUD = () => {
       </FilterContent>
       <Divider />
       <TableContainer>
-        <BasicTable />
+        {persons ? (
+          <BasicTable persons={persons} />
+        ) : (
+          <Typography variant="h1">LOADING...</Typography>
+        )}
       </TableContainer>
     </Card>
   );
