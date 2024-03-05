@@ -8,8 +8,9 @@ import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import { GlobalContext } from "context/GlobalState";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import ImageLoader from "components/ImageLoader";
 
 const MainContainer = styled(Box)(() => ({
   width: "100%",
@@ -40,6 +41,8 @@ const HeadActions = styled(MuiBox)(() => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
+
+  paddingInline: 40,
 }));
 
 const HeadTitle = styled(Typography)(() => ({
@@ -48,7 +51,9 @@ const HeadTitle = styled(Typography)(() => ({
 
 const HeadActionsContainer = styled(MuiBox)(() => ({
   display: "flex",
-  gap: 5,
+  gap: 10,
+  alignItems: "center",
+  justifyContent: "center",
 }));
 
 const ActionIcon = styled(Button)(() => ({
@@ -65,7 +70,7 @@ const ClientMaintenance = () => {
   const navigate = useNavigate();
   const { persons, loadingPersons, getPersons, editPerson, addPerson } =
     useContext(GlobalContext);
-  // const [currentPerson, setCurrentPerson] = useState(null);
+  const [personBase64Image, setPersonBase64Image] = useState(null);
 
   const handleGoBack = () => {
     navigate("/clients");
@@ -133,7 +138,7 @@ const ClientMaintenance = () => {
       fAfiliacion: assignYear,
       sexo: gender,
       resenaPersonal: resenha,
-      imagen: null,
+      imagen: personBase64Image,
       interesesId: interest,
     };
     if (clientId) {
@@ -141,6 +146,11 @@ const ClientMaintenance = () => {
     } else {
       addPerson(data);
     }
+  };
+
+  const handleImageLoad = (base64Image) => {
+    debugger;
+    setPersonBase64Image(base64Image);
   };
 
   const renderForm = () => {
@@ -151,7 +161,10 @@ const ClientMaintenance = () => {
       <>
         <Content>
           <HeadActions>
-            <HeadTitle variant="h5">Mantenimiento de cliente</HeadTitle>
+            <HeadActionsContainer>
+              <ImageLoader onLoad={handleImageLoad} />
+              <HeadTitle variant="h5">Mantenimiento de cliente</HeadTitle>
+            </HeadActionsContainer>
             <HeadActionsContainer>
               <ActionIcon
                 variant="contained"
@@ -301,7 +314,7 @@ const ClientMaintenance = () => {
 
   return (
     <MainContainer>
-      <Card>{render()}</Card>;
+      <Card>{render()}</Card>
     </MainContainer>
   );
 };
