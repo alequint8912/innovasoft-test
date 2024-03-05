@@ -5,6 +5,7 @@ import appReducer from "./PersonReducer";
 const initialState = {
   persons: null,
   loadingPersons: false,
+  notification: null,
 };
 
 const mockPersons = [
@@ -21,7 +22,7 @@ const mockPersons = [
     sexo: "M",
     resenaPersonal: "A dedicated professional with a passion for technology.",
     imagen: null,
-    interesesId: "605c72ef1234567890abcde0",
+    interesesId: "intereses#1",
   },
   {
     _id: "605c72ef1234567890abcde1",
@@ -36,7 +37,7 @@ const mockPersons = [
     sexo: "F",
     resenaPersonal: "An innovative thinker with a focus on sustainability.",
     imagen: null,
-    interesesId: "605c72ef1234567890abcde2",
+    interesesId: "intereses#2",
   },
   {
     _id: "605c72ef1234567890abcde3",
@@ -51,7 +52,7 @@ const mockPersons = [
     sexo: "F",
     resenaPersonal: "A creative artist with a love for painting.",
     imagen: null,
-    interesesId: "605c72ef1234567890abcde4",
+    interesesId: "intereses#3",
   },
   {
     _id: "605c72ef1234567890abcde5",
@@ -66,7 +67,7 @@ const mockPersons = [
     sexo: "M",
     resenaPersonal: "A passionate traveler with a love for exploration.",
     imagen: null,
-    interesesId: "605c72ef1234567890abcde6",
+    interesesId: "intereses#1",
   },
   {
     _id: "605c72ef1234567890abcde7",
@@ -81,7 +82,7 @@ const mockPersons = [
     sexo: "M",
     resenaPersonal: "A tech enthusiast with a passion for gadgets.",
     imagen: null,
-    interesesId: "605c72ef1234567890abcde8",
+    interesesId: "intereses#2",
   },
   {
     _id: "605c72ef1234567890abcde9",
@@ -96,7 +97,7 @@ const mockPersons = [
     sexo: "F",
     resenaPersonal: "A fitness enthusiast with a love for yoga.",
     imagen: null,
-    interesesId: "605c72ef1234567890abcde10",
+    interesesId: "intereses#3",
   },
   {
     _id: "605c72ef1234567890abcde11",
@@ -111,7 +112,7 @@ const mockPersons = [
     sexo: "F",
     resenaPersonal: "A passionate gardener with a love for plants.",
     imagen: null,
-    interesesId: "605c72ef1234567890abcde12",
+    interesesId: "intereses#1",
   },
   {
     _id: "605c72ef1234567890abcde13",
@@ -126,7 +127,7 @@ const mockPersons = [
     sexo: "M",
     resenaPersonal: "A food enthusiast with a love for cooking.",
     imagen: null,
-    interesesId: "605c72ef1234567890abcde14",
+    interesesId: "intereses#2",
   },
   {
     _id: "605c72ef1234567890abcde15",
@@ -141,7 +142,7 @@ const mockPersons = [
     sexo: "F",
     resenaPersonal: "A musician with a passion for guitar.",
     imagen: null,
-    interesesId: "605c72ef1234567890abcde16",
+    interesesId: "intereses#3",
   },
   {
     _id: "605c72ef1234567890abcde17",
@@ -156,7 +157,7 @@ const mockPersons = [
     sexo: "M",
     resenaPersonal: "A tech guru with a passion for programming.",
     imagen: null,
-    interesesId: "605c72ef1234567890abcde18",
+    interesesId: "intereses#1",
   },
 ];
 
@@ -214,15 +215,23 @@ export const GlobalProvider = ({ children }) => {
     });
   }
 
+  function cleanNotificacion() {
+    dispatch({
+      type: "CLEAN_NOTIFICATION",
+    });
+  }
+
   return (
     <GlobalContext.Provider
       value={{
         persons: state.persons,
         loadingPersons: state.loadingPersons,
+        notification: state.notification,
         addPerson,
         editPerson,
         removePerson,
         getPersons,
+        cleanNotificacion,
       }}
     >
       {children}

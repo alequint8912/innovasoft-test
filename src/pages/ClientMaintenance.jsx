@@ -1,5 +1,3 @@
-import { useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import { SaveAlt } from "@mui/icons-material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Divider, MenuItem, TextField, Typography } from "@mui/material";
@@ -8,6 +6,9 @@ import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import { styled } from "@mui/material/styles";
+import { GlobalContext } from "context/GlobalState";
+import { useContext, useEffect, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 const Content = styled(CardContent)(() => ({
   // paddingInline: 0,
@@ -43,6 +44,7 @@ const HeadActionsContainer = styled(MuiBox)(() => ({
   display: "flex",
   gap: 5,
 }));
+
 const ActionIcon = styled(Button)(() => ({
   backgroundColor: "gray",
 }));
@@ -55,10 +57,17 @@ const FormInput = styled(TextField)(() => ({
 const ClientMaintenance = () => {
   const { clientId } = useParams();
   const navigate = useNavigate();
+  const { persons, loadingPersons, getPersons, editPerson, addPerson } =
+    useContext(GlobalContext);
+  // const [currentPerson, setCurrentPerson] = useState(null);
 
   const handleGoBack = () => {
     navigate("/clients");
   };
+
+  useEffect(() => {
+    if (!persons) getPersons();
+  }, []);
 
   const identificationRef = useRef(null);
   const nameRef = useRef(null);
@@ -101,141 +110,200 @@ const ClientMaintenance = () => {
       address,
       resenha,
     });
+
+    /// validate json with yup
+
+    const data = {
+      ...(clientId && { _id: clientId }),
+      nombre: name,
+      apellidos: lastname,
+      identificacion: identification,
+      telefonoCelular: phone,
+      otroTelefono: otherPhone,
+      direccion: address,
+      fNacimiento: birthYear,
+      fAfiliacion: assignYear,
+      sexo: gender,
+      resenaPersonal: resenha,
+      imagen: null,
+      interesesId: interest,
+    };
+    if (clientId) {
+      editPerson(data);
+    } else {
+      addPerson(data);
+    }
+    // debugger;
+    // identificationRef.current.children[1].children[0].value = "";
+    // nameRef.current.children[1].children[0].value = "";
+    // lastnameRef.current.children[1].children[0].value = "";
+    // genderRef.current.children[1].children[1].value = "";
+    // birthYearRef.current.children[1].children[0].value = "";
+    // assignYearRef.current.children[1].children[0].value = "";
+    // phoneRef.current.children[1].children[0].value = "";
+    // otherPhoneRef.current.children[1].children[0].value = "";
+    // interestRef.current.children[1].children[1].value = "";
+    // addressRef.current.children[1].children[0].value = "";
+    // resenhaRef.current.children[1].children[0].value = "";
   };
 
-  return (
-    <Card>
-      <Content>
-        <HeadActions>
-          <HeadTitle variant="h5">Mantenimiento de cliente</HeadTitle>
-          <HeadActionsContainer>
-            <ActionIcon
-              variant="contained"
-              startIcon={<SaveAlt />}
-              onClick={handleSave}
+  const renderForm = () => {
+    const currentPerson = clientId
+      ? persons?.find(({ _id }) => clientId === _id)
+      : null;
+    return (
+      <>
+        <Content>
+          <HeadActions>
+            <HeadTitle variant="h5">Mantenimiento de cliente</HeadTitle>
+            <HeadActionsContainer>
+              <ActionIcon
+                variant="contained"
+                startIcon={<SaveAlt />}
+                onClick={handleSave}
+              >
+                Guardar
+              </ActionIcon>
+              <ActionIcon
+                variant="contained"
+                startIcon={<ArrowBackIcon />}
+                onClick={handleGoBack}
+              >
+                Regresar
+              </ActionIcon>
+            </HeadActionsContainer>
+          </HeadActions>
+        </Content>
+        <Divider />
+        <FormContainer>
+          <FormRow>
+            <FormInput
+              id="identification"
+              label="Identificación"
+              variant="outlined"
+              ref={identificationRef}
+              defaultValue={currentPerson?.identificacion}
+            />
+            <FormInput
+              id="name"
+              label="Nombre"
+              variant="outlined"
+              ref={nameRef}
+              defaultValue={currentPerson?.nombre}
+            />
+            <FormInput
+              id="lastname"
+              label="Apellidos"
+              variant="outlined"
+              ref={lastnameRef}
+              defaultValue={currentPerson?.apellidos}
+            />
+          </FormRow>
+          <FormRow>
+            <FormInput
+              id="gender"
+              select
+              label="Select"
+              ref={genderRef}
+              defaultValue={currentPerson?.sexo ?? "F"}
             >
-              Guardar
-            </ActionIcon>
-            <ActionIcon
-              variant="contained"
-              startIcon={<ArrowBackIcon />}
-              onClick={handleGoBack}
-            >
-              Regresar
-            </ActionIcon>
-          </HeadActionsContainer>
-        </HeadActions>
-      </Content>
-      <Divider />
-      <FormContainer>
-        <FormRow>
-          <FormInput
-            id="identification"
-            label="Identificación"
-            variant="outlined"
-            ref={identificationRef}
-          />
-          <FormInput
-            id="name"
-            label="Nombre"
-            variant="outlined"
-            ref={nameRef}
-          />
-          <FormInput
-            id="lastname"
-            label="Apellidos"
-            variant="outlined"
-            ref={lastnameRef}
-          />
-        </FormRow>
-        <FormRow>
-          <FormInput
-            id="gender"
-            select
-            label="Select"
-            defaultValue="femenino"
-            ref={genderRef}
-          >
-            <MenuItem key={"femenino"} value="femenino">
-              Femenino
-            </MenuItem>
-            <MenuItem key={"masculino"} value="masculino">
-              Masculino
-            </MenuItem>
-          </FormInput>
+              <MenuItem key={"F"} value="F">
+                Femenino
+              </MenuItem>
+              <MenuItem key={"M"} value="M">
+                Masculino
+              </MenuItem>
+            </FormInput>
 
-          <FormInput
-            type="date"
-            id="birthYear"
-            label="Fecha de nacimiento"
-            defaultValue={defaultDate}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            ref={birthYearRef}
-          />
-          <FormInput
-            type="date"
-            id="assignYear"
-            label="Fecha de afiliación"
-            defaultValue={defaultDate}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            ref={assignYearRef}
-          />
-        </FormRow>
-        <FormRow>
-          <FormInput
-            id="phone"
-            label="Teléfono"
-            variant="outlined"
-            ref={phoneRef}
-          />
-          <FormInput
-            id="otherPhone"
-            label="Teléfono otro"
-            variant="outlined"
-            ref={otherPhoneRef}
-          />
-          <FormInput
-            id="interest"
-            select
-            label="Interes"
-            defaultValue={"interes#1"}
-            ref={interestRef}
-          >
-            <MenuItem key={"interes#1"} value="interes#1">
-              Interes # 1
-            </MenuItem>
-            <MenuItem key={"interes#2"} value="interes#2">
-              Interes # 2
-            </MenuItem>
-            <MenuItem key={"interes#3"} value="interes#3">
-              Interes # 3
-            </MenuItem>
-          </FormInput>
-        </FormRow>
-        <FormRow>
-          <FormInput
-            id="address"
-            label="Dirección"
-            variant="outlined"
-            ref={addressRef}
-          />
-        </FormRow>
-        <FormRow>
-          <FormInput
-            id="resenha"
-            label="Reseña"
-            variant="outlined"
-            ref={resenhaRef}
-          />
-        </FormRow>
-      </FormContainer>
-      <Divider />
-    </Card>
-  );
+            <FormInput
+              type="date"
+              id="birthYear"
+              label="Fecha de nacimiento"
+              defaultValue={currentPerson?.fNacimiento ?? defaultDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              ref={birthYearRef}
+            />
+            <FormInput
+              type="date"
+              id="assignYear"
+              label="Fecha de afiliación"
+              defaultValue={currentPerson?.fAfiliacion ?? defaultDate}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              ref={assignYearRef}
+            />
+          </FormRow>
+          <FormRow>
+            <FormInput
+              id="phone"
+              label="Teléfono"
+              variant="outlined"
+              ref={phoneRef}
+              defaultValue={currentPerson?.telefonoCelular}
+            />
+            <FormInput
+              id="otherPhone"
+              label="Teléfono otro"
+              variant="outlined"
+              ref={otherPhoneRef}
+              defaultValue={currentPerson?.otroTelefono}
+            />
+            <FormInput
+              id="interest"
+              select
+              label="Interes"
+              defaultValue={currentPerson?.interesesId ?? "intereses#1"}
+              ref={interestRef}
+            >
+              <MenuItem key={"intereses#1"} value="intereses#1">
+                Interes # 1
+              </MenuItem>
+              <MenuItem key={"intereses#2"} value="intereses#2">
+                Interes # 2
+              </MenuItem>
+              <MenuItem key={"intereses#3"} value="intereses#3">
+                Interes # 3
+              </MenuItem>
+            </FormInput>
+          </FormRow>
+          <FormRow>
+            <FormInput
+              id="address"
+              label="Dirección"
+              variant="outlined"
+              ref={addressRef}
+              defaultValue={currentPerson?.direccion}
+            />
+          </FormRow>
+          <FormRow>
+            <FormInput
+              id="resenha"
+              label="Reseña"
+              variant="outlined"
+              ref={resenhaRef}
+              defaultValue={currentPerson?.resenaPersonal}
+            />
+          </FormRow>
+        </FormContainer>
+        <Divider />
+      </>
+    );
+  };
+
+  const render = () => {
+    if (clientId) {
+      if (persons && !loadingPersons) return renderForm();
+      else return <Typography variant="h2">LOADING...</Typography>;
+    } else {
+      if (!loadingPersons) return renderForm();
+      else return <Typography variant="h2">LOADING...</Typography>;
+    }
+  };
+
+  return <Card>{render()}</Card>;
 };
 
 export default ClientMaintenance;

@@ -70,7 +70,7 @@ const ClientsCRUD = () => {
   };
 
   const handleAddPerson = () => {
-    navigate("/clients/0");
+    navigate("/clients/add");
   };
 
   useEffect(() => {

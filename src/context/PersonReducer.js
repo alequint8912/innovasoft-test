@@ -5,6 +5,10 @@ export default function appReducer(state, action) {
         ...state,
         persons: [...state.persons, action.payload],
         loadingPersons: false,
+        notification: {
+          type: "success",
+          message: "Persona agregada correctamente",
+        },
       };
     case "EDIT_PERSON":
       return {
@@ -13,6 +17,10 @@ export default function appReducer(state, action) {
           person._id === action.payload._id ? action.payload : person
         ),
         loadingPersons: false,
+        notification: {
+          type: "success",
+          message: "Persona editada correctamente",
+        },
       };
     case "REMOVE_PERSON":
       return {
@@ -21,6 +29,10 @@ export default function appReducer(state, action) {
           (person) => person._id !== action.payload
         ),
         loadingPersons: false,
+        notification: {
+          type: "success",
+          message: "Persona eliminada correctamente",
+        },
       };
     case "GET_PERSONS_SUCCESS":
       return {
@@ -32,6 +44,11 @@ export default function appReducer(state, action) {
       return {
         ...state,
         loadingPersons: true,
+      };
+    case "CLEAN_NOTIFICATION":
+      return {
+        ...state,
+        notification: null,
       };
     default:
       return state;

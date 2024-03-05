@@ -6,8 +6,9 @@ const mainRoutes = {
   element: <Layout />,
   children: [
     { path: "/", element: <Welcome /> },
+    { path: "/clients/edit/:clientId", element: <ClientMaintenance /> },
+    { path: "/clients/add", element: <ClientMaintenance /> },
     { path: "/clients", element: <ClientsCRUD /> },
-    { path: "/clients/:clientId", element: <ClientMaintenance /> },
   ],
 };
 

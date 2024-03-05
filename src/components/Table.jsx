@@ -41,7 +41,7 @@ function ClientsTable({ persons }) {
   };
 
   const handleEdit = (id) => {
-    navigate(`/clients/${id}`);
+    navigate(`/clients/edit/${id}`);
   };
 
   return (
