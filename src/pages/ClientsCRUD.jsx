@@ -1,3 +1,4 @@
+import { useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import MuiBox from "@mui/material/Box";
 import { Divider, IconButton, TextField, Typography } from "@mui/material";
@@ -69,6 +70,10 @@ const FilterButton = styled(IconButton)(() => ({
 
 const ClientsCRUD = () => {
   const { persons, loadingPersons, getPersons } = useContext(GlobalContext);
+  const [filteredPersons, setFilteredPersons] = useState(persons);
+
+  const nameRef = useRef(null);
+  const identificationRef = useRef(null);
 
   const navigate = useNavigate();
 
@@ -82,7 +87,31 @@ const ClientsCRUD = () => {
 
   useEffect(() => {
     if (!persons) getPersons();
-  }, []);
+    else setFilteredPersons(persons);
+  }, [persons]);
+
+  const handleFilter = () => {
+    const identification =
+      identificationRef.current.children[1].children[0].value;
+    const name = nameRef.current.children[1].children[0].value;
+
+    if (identification || name) {
+      const lowerName = name.toLowerCase();
+      const lowerIdentification = identification.toLowerCase();
+      const filterResult = persons.filter(({ identificacion, nombre }) => {
+        const identificacionLower = identificacion.toLowerCase();
+        const nombreLower = nombre.toLowerCase();
+        return (
+          identificacionLower.includes(lowerIdentification) &&
+          nombreLower.includes(lowerName)
+        );
+      });
+
+      setFilteredPersons(filterResult);
+    } else {
+      setFilteredPersons(persons);
+    }
+  };
 
   return (
     <MainContainer>
@@ -110,20 +139,30 @@ const ClientsCRUD = () => {
         </Content>
         <Divider />
         <FilterContent>
-          <FilterInput id="outlined-name" label="Nombre" variant="outlined" />
+          <FilterInput
+            id="outlined-name"
+            label="Nombre"
+            variant="outlined"
+            ref={nameRef}
+          />
           <FilterInput
             id="outlined-id"
             label="Identificación"
             variant="outlined"
+            ref={identificationRef}
           />
-          <FilterButton aria-label="delete" color="black">
+          <FilterButton
+            aria-label="delete"
+            color="black"
+            onClick={handleFilter}
+          >
             <SearchIcon />
           </FilterButton>
         </FilterContent>
         <Divider />
         <TableContainer>
-          {persons && !loadingPersons ? (
-            <ClientsTable persons={persons} />
+          {filteredPersons && !loadingPersons ? (
+            <ClientsTable persons={filteredPersons} />
           ) : (
             <Typography variant="h1">LOADING...</Typography>
           )}

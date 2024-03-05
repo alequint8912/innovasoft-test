@@ -8,7 +8,7 @@ import Paper from "@mui/material/Paper";
 import { IconButton } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import styled from "@emotion/styled";
-import { useContext } from "react";
+import { memo, useContext } from "react";
 import { GlobalContext } from "context/GlobalState";
 import { useNavigate } from "react-router-dom";
 
@@ -84,4 +84,4 @@ function ClientsTable({ persons }) {
   );
 }
 
-export default ClientsTable;
+export default memo(ClientsTable);
