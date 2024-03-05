@@ -5,10 +5,16 @@ import MuiBox from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import { GlobalContext } from "context/GlobalState";
 import { useContext, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+
+const MainContainer = styled(Box)(() => ({
+  width: "100%",
+  height: "100%",
+}));
 
 const Content = styled(CardContent)(() => ({
   // paddingInline: 0,
@@ -293,7 +299,11 @@ const ClientMaintenance = () => {
     }
   };
 
-  return <Card>{render()}</Card>;
+  return (
+    <MainContainer>
+      <Card>{render()}</Card>;
+    </MainContainer>
+  );
 };
 
 export default ClientMaintenance;

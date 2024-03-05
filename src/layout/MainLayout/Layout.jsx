@@ -26,7 +26,7 @@ export default function Layout() {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Header
         handleDrawerOpen={handleDrawerOpen}
         drawerWidth={drawerWidth}

@@ -3,6 +3,7 @@ import MuiBox from "@mui/material/Box";
 import { Divider, IconButton, TextField, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
+import Box from "@mui/material/Box";
 import CardContent from "@mui/material/CardContent";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -12,9 +13,15 @@ import { GlobalContext } from "context/GlobalState";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+const MainContainer = styled(Box)(() => ({
+  width: "100%",
+  height: "100%",
+}));
 const Content = styled(CardContent)(() => ({
   // paddingInline: 0,
   // borderBottom: "1px solid gray",
+  width: "100%",
+  height: "100%",
 }));
 
 const FilterContent = styled(CardContent)(() => ({
@@ -78,49 +85,51 @@ const ClientsCRUD = () => {
   }, []);
 
   return (
-    <Card>
-      <Content>
-        <HeadActions>
-          <HeadTitle variant="h5">Consulta de clientes</HeadTitle>
-          <HeadActionsContainer>
-            <ActionIcon
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={handleAddPerson}
-            >
-              Agregar
-            </ActionIcon>
-            <ActionIcon
-              variant="contained"
-              startIcon={<ArrowBackIcon />}
-              onClick={handleBack}
-            >
-              Regresar
-            </ActionIcon>
-          </HeadActionsContainer>
-        </HeadActions>
-      </Content>
-      <Divider />
-      <FilterContent>
-        <FilterInput id="outlined-name" label="Nombre" variant="outlined" />
-        <FilterInput
-          id="outlined-id"
-          label="Identificación"
-          variant="outlined"
-        />
-        <FilterButton aria-label="delete" color="black">
-          <SearchIcon />
-        </FilterButton>
-      </FilterContent>
-      <Divider />
-      <TableContainer>
-        {persons && !loadingPersons ? (
-          <ClientsTable persons={persons} />
-        ) : (
-          <Typography variant="h1">LOADING...</Typography>
-        )}
-      </TableContainer>
-    </Card>
+    <MainContainer>
+      <Card>
+        <Content>
+          <HeadActions>
+            <HeadTitle variant="h5">Consulta de clientes</HeadTitle>
+            <HeadActionsContainer>
+              <ActionIcon
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={handleAddPerson}
+              >
+                Agregar
+              </ActionIcon>
+              <ActionIcon
+                variant="contained"
+                startIcon={<ArrowBackIcon />}
+                onClick={handleBack}
+              >
+                Regresar
+              </ActionIcon>
+            </HeadActionsContainer>
+          </HeadActions>
+        </Content>
+        <Divider />
+        <FilterContent>
+          <FilterInput id="outlined-name" label="Nombre" variant="outlined" />
+          <FilterInput
+            id="outlined-id"
+            label="Identificación"
+            variant="outlined"
+          />
+          <FilterButton aria-label="delete" color="black">
+            <SearchIcon />
+          </FilterButton>
+        </FilterContent>
+        <Divider />
+        <TableContainer>
+          {persons && !loadingPersons ? (
+            <ClientsTable persons={persons} />
+          ) : (
+            <Typography variant="h1">LOADING...</Typography>
+          )}
+        </TableContainer>
+      </Card>
+    </MainContainer>
   );
 };
 
