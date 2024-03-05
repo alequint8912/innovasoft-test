@@ -114,7 +114,9 @@ const ClientMaintenance = () => {
     /// validate json with yup
 
     const data = {
-      ...(clientId && { _id: clientId }),
+      ...(clientId
+        ? { _id: clientId }
+        : { _id: `${identification}-${name}-${lastname}` }),
       nombre: name,
       apellidos: lastname,
       identificacion: identification,
@@ -133,18 +135,6 @@ const ClientMaintenance = () => {
     } else {
       addPerson(data);
     }
-    // debugger;
-    // identificationRef.current.children[1].children[0].value = "";
-    // nameRef.current.children[1].children[0].value = "";
-    // lastnameRef.current.children[1].children[0].value = "";
-    // genderRef.current.children[1].children[1].value = "";
-    // birthYearRef.current.children[1].children[0].value = "";
-    // assignYearRef.current.children[1].children[0].value = "";
-    // phoneRef.current.children[1].children[0].value = "";
-    // otherPhoneRef.current.children[1].children[0].value = "";
-    // interestRef.current.children[1].children[1].value = "";
-    // addressRef.current.children[1].children[0].value = "";
-    // resenhaRef.current.children[1].children[0].value = "";
   };
 
   const renderForm = () => {
