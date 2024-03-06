@@ -6,13 +6,16 @@ import "@fontsource/roboto/700.css";
 import Routes from "routes";
 import CssBaseline from "@mui/material/CssBaseline";
 import { GlobalProvider } from "context/GlobalState";
+import AuthProvider from "context/AuthProvider";
 
 function App() {
   return (
-    <GlobalProvider>
-      <CssBaseline />
-      <Routes />
-    </GlobalProvider>
+    <AuthProvider>
+      <GlobalProvider>
+        <CssBaseline />
+        <Routes />
+      </GlobalProvider>
+    </AuthProvider>
   );
 }
 

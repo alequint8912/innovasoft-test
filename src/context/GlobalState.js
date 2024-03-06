@@ -1,5 +1,5 @@
 // src/context/GlobalState.js
-import React, { createContext, useReducer } from "react";
+import { createContext, useReducer } from "react";
 import appReducer from "./PersonReducer";
 
 const initialState = {
