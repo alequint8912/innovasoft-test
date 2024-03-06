@@ -15,7 +15,7 @@ const SmallUploadButton = styled(IconButton)(() => ({
   backgroundColor: "#75b6f7",
 }));
 
-const ImageLoader = ({ onLoad }) => {
+const ImageLoader = ({ onLoad, base64Image }) => {
   const [previewSource, setPreviewSource] = useState("");
 
   const handleFileChange = (e) => {
@@ -48,10 +48,10 @@ const ImageLoader = ({ onLoad }) => {
         onChange={handleFileChange}
         style={{ display: "none" }}
       />
-      {previewSource ? (
+      {previewSource || base64Image ? (
         <figure style={{ position: "relative" }}>
           <img
-            src={previewSource}
+            src={previewSource ?? base64Image}
             alt="chosen"
             style={{
               height: "102px",
