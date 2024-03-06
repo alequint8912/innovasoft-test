@@ -215,7 +215,7 @@ export const GlobalProvider = ({ children }) => {
     });
   }
 
-  function cleanNotificacion() {
+  function cleanNotification() {
     dispatch({
       type: "CLEAN_NOTIFICATION",
     });
@@ -231,7 +231,7 @@ export const GlobalProvider = ({ children }) => {
         editPerson,
         removePerson,
         getPersons,
-        cleanNotificacion,
+        cleanNotification,
       }}
     >
       {children}

@@ -186,7 +186,6 @@ const ClientMaintenance = () => {
           errors[error.path] = error.message; // This is the error message
         });
 
-        console.log("Validation errors:", errors);
         setErrors(errors);
       });
 
@@ -198,7 +197,6 @@ const ClientMaintenance = () => {
   };
 
   const renderForm = () => {
-    console.log(errors);
     const currentPerson = clientId
       ? persons?.find(({ _id }) => clientId === _id)
       : null;
@@ -237,11 +235,7 @@ const ClientMaintenance = () => {
             <FormInput
               error={errors?.identificacion}
               id="identification"
-              label={
-                errors?.identificacion
-                  ? errors?.identificacion
-                  : "Identificación"
-              }
+              label={errors?.identificacion ?? "Identificación"}
               variant="outlined"
               ref={identificationRef}
               defaultValue={currentPerson?.identificacion}

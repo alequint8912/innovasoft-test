@@ -15,7 +15,7 @@ const drawerWidth = 400;
 
 export default function Layout() {
   const [open, setOpen] = useState(false);
-  const { notification, cleanNotificacion } = useContext(GlobalContext);
+  const { notification, cleanNotification } = useContext(GlobalContext);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -43,7 +43,7 @@ export default function Layout() {
       <Snackbar
         open={Boolean(notification)}
         autoHideDuration={3000}
-        onClose={cleanNotificacion}
+        onClose={cleanNotification}
         message={notification?.message ?? ""}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       />

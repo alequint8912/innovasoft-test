@@ -4,7 +4,6 @@ import MuiBox from "@mui/material/Box";
 import { Divider, IconButton, TextField, Typography } from "@mui/material";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import Box from "@mui/material/Box";
 import CardContent from "@mui/material/CardContent";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -14,7 +13,7 @@ import { GlobalContext } from "context/GlobalState";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const MainContainer = styled(Box)(() => ({
+const MainContainer = styled(MuiBox)(() => ({
   width: "100%",
   height: "100%",
 }));
