@@ -13,7 +13,6 @@ import {
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import * as yup from "yup";
-import CircularProgress from "@mui/material/CircularProgress";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Loader } from "components";
 
