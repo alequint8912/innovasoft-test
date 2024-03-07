@@ -12,6 +12,9 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ImageLoader from "components/ImageLoader";
 import * as yup from "yup";
+import { Loader } from "components";
+import { useGlobalState } from "hooks";
+import { useAuth } from "hooks";
 
 const MainContainer = styled(Box)(() => ({
   width: "100%",
@@ -69,8 +72,21 @@ const FormInput = styled(TextField)(() => ({
 const ClientMaintenance = () => {
   const { clientId } = useParams();
   const navigate = useNavigate();
-  const { clients, loading, getClients, editPerson, addPerson } =
-    useContext(GlobalContext);
+
+  const {
+    clients,
+    interests,
+    loading,
+    getUserById,
+    editPerson,
+    addClient,
+    getInterests,
+    notification,
+  } = useGlobalState();
+  const { getSession } = useAuth();
+  const sessionStringify = getSession();
+  const { userid } = JSON.parse(sessionStringify ?? "{}");
+
   const [personBase64Image, setPersonBase64Image] = useState(null);
   const [errors, setErrors] = useState(null);
 
@@ -79,7 +95,8 @@ const ClientMaintenance = () => {
   };
 
   useEffect(() => {
-    if (!clients) getClients();
+    if (!clients && clientId) getUserById({ clientId });
+    if (!interests) getInterests();
   }, []);
 
   const identificationRef = useRef(null);
@@ -110,22 +127,20 @@ const ClientMaintenance = () => {
     const address = addressRef.current.children[1].children[0].value;
     const resenha = resenhaRef.current.children[1].children[0].value;
 
-    const data = {
-      ...(clientId
-        ? { _id: clientId }
-        : { _id: `${identification}-${name}-${lastname}` }),
+    const client = {
+      ...(clientId && { id: clientId }),
       nombre: name,
       apellidos: lastname,
       identificacion: identification,
-      telefonoCelular: phone,
+      celular: phone,
       otroTelefono: otherPhone,
       direccion: address,
       fNacimiento: birthYear,
       fAfiliacion: assignYear,
       sexo: gender,
-      resenaPersonal: resenha,
+      resennaPersonal: resenha,
       imagen: personBase64Image,
-      interesesId: interest,
+      interesFK: interest,
     };
 
     const schema = yup.object().shape({
@@ -141,7 +156,7 @@ const ClientMaintenance = () => {
         .string()
         .max(20, "La identificación no puede exceder los 20 caracteres")
         .required("La identificación es requerida"),
-      telefonoCelular: yup
+      celular: yup
         .string()
         .max(20, "El teléfono celular no puede exceder los 20 caracteres")
         .required("El teléfono celular es requerido"),
@@ -159,23 +174,23 @@ const ClientMaintenance = () => {
         .string()
         .matches(/^[FM]$/, "El sexo debe ser F o M")
         .required("El sexo es requerido"),
-      resenaPersonal: yup
+      resennaPersonal: yup
         .string()
         .max(200, "La reseña personal no puede exceder los 200 caracteres")
         .required("La reseña personal es requerida"),
-      interesesId: yup
+      interesFK: yup
         .string()
         .uuid("El ID de intereses debe ser un UUID válido")
         .required("El ID de intereses es requerido"),
     });
 
     schema
-      .validate(data, { abortEarly: false })
+      .validate(client, { abortEarly: false })
       .then(() => {
         if (clientId) {
-          editPerson(data);
+          editPerson(client);
         } else {
-          addPerson(data);
+          addClient({ userid, client });
         }
 
         setErrors(null);
@@ -196,9 +211,27 @@ const ClientMaintenance = () => {
     setPersonBase64Image(base64Image);
   };
 
+  const renderNotification = () => {
+    const status = notification?.status;
+    const messageByStatus = {
+      Success: (
+        <Typography variant="h6" style={{ color: "green" }}>
+          {notification.message}
+        </Typography>
+      ),
+      Error: (
+        <Typography variant="h6" style={{ color: "red" }}>
+          {notification.message}
+        </Typography>
+      ),
+    };
+
+    return messageByStatus[status];
+  };
+
   const renderForm = () => {
     const currentPerson = clientId
-      ? clients?.find(({ _id }) => clientId === _id)
+      ? clients?.find(({ id }) => clientId === id)
       : null;
     return (
       <>
@@ -216,6 +249,7 @@ const ClientMaintenance = () => {
                 variant="contained"
                 startIcon={<SaveAlt />}
                 onClick={handleSave}
+                disabled={loading}
               >
                 Guardar
               </ActionIcon>
@@ -223,6 +257,7 @@ const ClientMaintenance = () => {
                 variant="contained"
                 startIcon={<ArrowBackIcon />}
                 onClick={handleGoBack}
+                disabled={loading}
               >
                 Regresar
               </ActionIcon>
@@ -233,6 +268,7 @@ const ClientMaintenance = () => {
         <FormContainer>
           <FormRow>
             <FormInput
+              disabled={loading}
               error={errors?.identificacion}
               id="identification"
               label={errors?.identificacion ?? "Identificación"}
@@ -241,6 +277,7 @@ const ClientMaintenance = () => {
               defaultValue={currentPerson?.identificacion}
             />
             <FormInput
+              disabled={loading}
               error={errors?.nombre}
               id="name"
               label={errors?.nombre ?? "Nombre"}
@@ -249,6 +286,7 @@ const ClientMaintenance = () => {
               defaultValue={currentPerson?.nombre}
             />
             <FormInput
+              disabled={loading}
               error={errors?.apellidos}
               id="lastname"
               label={errors?.apellidos ?? "Apellidos"}
@@ -259,6 +297,7 @@ const ClientMaintenance = () => {
           </FormRow>
           <FormRow>
             <FormInput
+              disabled={loading}
               error={errors?.sexo}
               id="gender"
               select
@@ -275,6 +314,7 @@ const ClientMaintenance = () => {
             </FormInput>
 
             <FormInput
+              disabled={loading}
               error={errors?.fNacimiento}
               label={errors?.fNacimiento ?? "Fecha de nacimiento"}
               type="date"
@@ -286,6 +326,7 @@ const ClientMaintenance = () => {
               ref={birthYearRef}
             />
             <FormInput
+              disabled={loading}
               error={errors?.fAfiliacion}
               type="date"
               id="assignYear"
@@ -299,14 +340,16 @@ const ClientMaintenance = () => {
           </FormRow>
           <FormRow>
             <FormInput
-              error={errors?.telefonoCelular}
+              disabled={loading}
+              error={errors?.celular}
               id="phone"
-              label={errors?.telefonoCelular ?? "Teléfono"}
+              label={errors?.celular ?? "Teléfono"}
               variant="outlined"
               ref={phoneRef}
-              defaultValue={currentPerson?.telefonoCelular}
+              defaultValue={currentPerson?.celular}
             />
             <FormInput
+              disabled={loading}
               error={errors?.otroTelefono}
               id="otherPhone"
               label={errors?.otroTelefono ?? "Teléfono otro"}
@@ -315,38 +358,24 @@ const ClientMaintenance = () => {
               defaultValue={currentPerson?.otroTelefono}
             />
             <FormInput
+              disabled={loading}
               error={errors?.interesesId}
               id="interest"
               select
               label={errors?.interesesId ?? "Interes"}
-              defaultValue={
-                currentPerson?.interesesId ??
-                "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-              }
+              defaultValue={currentPerson?.interesesId ?? interests?.[0]?.id}
               ref={interestRef}
             >
-              <MenuItem
-                key={"intereses#1"}
-                value="3fa85f64-5717-4562-b3fc-2c963f66afa6"
-              >
-                Interes # 1
-              </MenuItem>
-              <MenuItem
-                key={"intereses#2"}
-                value="3fa85f64-5717-4562-b3fc-2c963f66aab5"
-              >
-                Interes # 2
-              </MenuItem>
-              <MenuItem
-                key={"intereses#3"}
-                value="3fa85f64-5717-4562-b3fc-2c963f66aab6"
-              >
-                Interes # 3
-              </MenuItem>
+              {interests?.map(({ id, descripcion }) => (
+                <MenuItem key={id} value={id}>
+                  {descripcion}
+                </MenuItem>
+              ))}
             </FormInput>
           </FormRow>
           <FormRow>
             <FormInput
+              disabled={loading}
               error={errors?.direccion}
               id="address"
               label={errors?.direccion ?? "Dirección"}
@@ -357,6 +386,7 @@ const ClientMaintenance = () => {
           </FormRow>
           <FormRow>
             <FormInput
+              disabled={loading}
               error={errors?.resenaPersonal}
               id="resenha"
               label={errors?.resenaPersonal ?? "Reseña personal"}
@@ -366,24 +396,27 @@ const ClientMaintenance = () => {
             />
           </FormRow>
         </FormContainer>
-        <Divider />
       </>
     );
   };
 
   const render = () => {
     if (clientId) {
-      if (clients && !loading) return renderForm();
-      else return <Typography variant="h2">LOADING...</Typography>;
+      if (clients && interests) return renderForm();
+      return;
     } else {
-      if (!loading) return renderForm();
-      else return <Typography variant="h2">LOADING...</Typography>;
+      if (interests) return renderForm();
+      return;
     }
   };
 
   return (
     <MainContainer>
       <Card>{render()}</Card>
+      <Box style={{ paddingTop: 30, textAlign: "center" }}>
+        {notification ? renderNotification() : null}
+        {loading ? <Loader /> : null}
+      </Box>
     </MainContainer>
   );
 };

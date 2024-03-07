@@ -5,17 +5,18 @@ import { axiosInstance } from "api";
 
 const initialState = {
   clients: null,
+  interests: null,
   loading: false,
   notification: null,
 };
 
 const mockPersons = [
   {
-    _id: "605c72ef1234567890abcdef",
+    id: "605c72ef1234567890abcdef",
     nombre: "John",
     apellidos: "Doe",
     identificacion: "JD1234567890",
-    telefonoCelular: "+1234567890",
+    celular: "+1234567890",
     otroTelefono: "+1234567890",
     direccion: "123 Main St, Anytown, USA",
     fNacimiento: "1980-01-01",
@@ -26,11 +27,11 @@ const mockPersons = [
     interesesId: "intereses#1",
   },
   {
-    _id: "605c72ef1234567890abcde1",
+    id: "605c72ef1234567890abcde1",
     nombre: "Jane",
     apellidos: "Doe",
     identificacion: "JD1234567891",
-    telefonoCelular: "+1234567891",
+    celular: "+1234567891",
     otroTelefono: "+1234567891",
     direccion: "456 Elm St, Anytown, USA",
     fNacimiento: "1985-02-02",
@@ -41,11 +42,11 @@ const mockPersons = [
     interesesId: "intereses#2",
   },
   {
-    _id: "605c72ef1234567890abcde3",
+    id: "605c72ef1234567890abcde3",
     nombre: "Alice",
     apellidos: "Smith",
     identificacion: "AS1234567893",
-    telefonoCelular: "+1234567893",
+    celular: "+1234567893",
     otroTelefono: "+1234567893",
     direccion: "789 Oak St, Anytown, USA",
     fNacimiento: "1990-03-03",
@@ -56,11 +57,11 @@ const mockPersons = [
     interesesId: "intereses#3",
   },
   {
-    _id: "605c72ef1234567890abcde5",
+    id: "605c72ef1234567890abcde5",
     nombre: "Bob",
     apellidos: "Johnson",
     identificacion: "BJ1234567894",
-    telefonoCelular: "+1234567894",
+    celular: "+1234567894",
     otroTelefono: "+1234567894",
     direccion: "321 Pine St, Anytown, USA",
     fNacimiento: "1995-04-04",
@@ -71,11 +72,11 @@ const mockPersons = [
     interesesId: "intereses#1",
   },
   {
-    _id: "605c72ef1234567890abcde7",
+    id: "605c72ef1234567890abcde7",
     nombre: "Charlie",
     apellidos: "Brown",
     identificacion: "CB1234567897",
-    telefonoCelular: "+1234567897",
+    celular: "+1234567897",
     otroTelefono: "+1234567897",
     direccion: "654 Maple St, Anytown, USA",
     fNacimiento: "2000-05-05",
@@ -86,11 +87,11 @@ const mockPersons = [
     interesesId: "intereses#2",
   },
   {
-    _id: "605c72ef1234567890abcde9",
+    id: "605c72ef1234567890abcde9",
     nombre: "Diana",
     apellidos: "Jones",
     identificacion: "DJ1234567899",
-    telefonoCelular: "+1234567899",
+    celular: "+1234567899",
     otroTelefono: "+1234567899",
     direccion: "987 Birch St, Anytown, USA",
     fNacimiento: "2005-06-06",
@@ -101,11 +102,11 @@ const mockPersons = [
     interesesId: "intereses#3",
   },
   {
-    _id: "605c72ef1234567890abcde11",
+    id: "605c72ef1234567890abcde11",
     nombre: "Eve",
     apellidos: "Miller",
     identificacion: "EM12345678911",
-    telefonoCelular: "+12345678911",
+    celular: "+12345678911",
     otroTelefono: "+12345678911",
     direccion: "123 Oak St, Anytown, USA",
     fNacimiento: "2010-07-07",
@@ -116,11 +117,11 @@ const mockPersons = [
     interesesId: "intereses#1",
   },
   {
-    _id: "605c72ef1234567890abcde13",
+    id: "605c72ef1234567890abcde13",
     nombre: "Frank",
     apellidos: "Davis",
     identificacion: "FD12345678913",
-    telefonoCelular: "+12345678913",
+    celular: "+12345678913",
     otroTelefono: "+12345678913",
     direccion: "456 Pine St, Anytown, USA",
     fNacimiento: "2015-08-08",
@@ -131,11 +132,11 @@ const mockPersons = [
     interesesId: "intereses#2",
   },
   {
-    _id: "605c72ef1234567890abcde15",
+    id: "605c72ef1234567890abcde15",
     nombre: "Grace",
     apellidos: "Wilson",
     identificacion: "GW12345678915",
-    telefonoCelular: "+12345678915",
+    celular: "+12345678915",
     otroTelefono: "+12345678915",
     direccion: "789 Elm St, Anytown, USA",
     fNacimiento: "2020-09-09",
@@ -146,11 +147,11 @@ const mockPersons = [
     interesesId: "intereses#3",
   },
   {
-    _id: "605c72ef1234567890abcde17",
+    id: "605c72ef1234567890abcde17",
     nombre: "Harry",
     apellidos: "Moore",
     identificacion: "HM12345678917",
-    telefonoCelular: "+12345678917",
+    celular: "+12345678917",
     otroTelefono: "+12345678917",
     direccion: "321 Oak St, Anytown, USA",
     fNacimiento: "2025-10-10",
@@ -175,13 +176,13 @@ export const GlobalProvider = ({ children }) => {
       .post("/Cliente/Listado", { usuarioId: userid, identificacion, nombre })
       .then((response) => {
         dispatch({
-          type: "LIST_CLIENTS_SUCCESS",
+          type: "GET_CLIENTS_SUCCESS",
           payload: response?.data,
         });
       })
       .catch((error) => {
         dispatch({
-          type: "LIST_CLIENTS_FAIL",
+          type: "GET_CLIENTS_FAIL",
           payload: {
             notification: {
               status: "Error",
@@ -192,17 +193,90 @@ export const GlobalProvider = ({ children }) => {
       });
   };
 
-  function addPerson(person) {
-    setTimeout(() => {
-      dispatch({
-        type: "ADD_PERSON",
-        payload: person,
-      });
-    }, [3000]);
+  const getUserById = async ({ clientId }) => {
     dispatch({
       type: "LOADING",
     });
-  }
+    await axiosInstance
+      .get(`/Cliente/Obtener/${clientId}`)
+      .then((response) =>
+        dispatch({
+          type: "GET_USER_BY_ID_SUCCESS",
+          payload: {
+            user: response?.data,
+          },
+        })
+      )
+      .catch((error) =>
+        dispatch({
+          type: "GET_USER_BY_ID_FAIL",
+          payload: {
+            notification: {
+              status: "Error",
+              message: "Upss... Tenemos un error.",
+            },
+          },
+        })
+      );
+  };
+
+  const getInterests = async () => {
+    dispatch({
+      type: "LOADING",
+    });
+
+    await axiosInstance
+      .get("/Intereses/Listado")
+      .then((response) =>
+        dispatch({
+          type: "GET_INTEREST_SUCCESS",
+          payload: response?.data,
+        })
+      )
+      .catch((error) =>
+        dispatch({
+          type: "GET_INTEREST_FAIL",
+          payload: {
+            notification: {
+              status: "Error",
+              message: "Upss... Tenemos un error.",
+            },
+          },
+        })
+      );
+  };
+
+  const addClient = async ({ userid, client }) => {
+    dispatch({
+      type: "LOADING",
+    });
+
+    await axiosInstance
+      .post("/Cliente/Crear", { usuarioId: userid, ...client })
+      .then((response) =>
+        dispatch({
+          type: "ADD_CLIENT_SUCCESS",
+          payload: {
+            newUser: response?.data,
+            notification: {
+              status: "Success",
+              message: "Cliente agregado correctamente",
+            },
+          },
+        })
+      )
+      .catch((error) => {
+        dispatch({
+          type: "ADD_CLIENT_FAIL",
+          payload: {
+            notification: {
+              status: "Error",
+              message: "Hubo un error al agregar este cliente.",
+            },
+          },
+        });
+      });
+  };
 
   function editPerson(person) {
     setTimeout(() => {
@@ -244,12 +318,15 @@ export const GlobalProvider = ({ children }) => {
     <GlobalContext.Provider
       value={{
         clients: state.clients,
+        interests: state.interests,
         loading: state.loading,
         notification: state.notification,
-        addPerson,
+        addClient,
         editPerson,
         removePerson,
         getClients,
+        getInterests,
+        getUserById,
         cleanNotification,
         cleanGlobalState,
       }}

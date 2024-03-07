@@ -55,9 +55,9 @@ function ClientsTable({ clients }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {clients.map(({ _id, identificacion, nombre, apellidos }, index) => (
+          {clients.map(({ id, identificacion, nombre, apellidos }, index) => (
             <TableRow
-              key={_id}
+              key={id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
             >
               <BodyCell component="th" scope="row">
@@ -65,12 +65,12 @@ function ClientsTable({ clients }) {
               </BodyCell>
               <BodyCell align="left">{`${nombre} ${apellidos}`}</BodyCell>
               <BodyCell align="left">
-                <IconButton onClick={() => handleEdit(_id)}>
+                <IconButton onClick={() => handleEdit(id)}>
                   <Edit />
                 </IconButton>
                 <IconButton
                   onClick={() =>
-                    handleRemove({ id: _id, name: nombre, lastName: apellidos })
+                    handleRemove({ id: id, name: nombre, lastName: apellidos })
                   }
                 >
                   <Delete />
