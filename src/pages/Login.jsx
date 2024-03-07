@@ -15,6 +15,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import * as yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Loader } from "components";
 
 const MainContainer = styled(MuiBox)(() => ({
   display: "flex",
@@ -145,11 +146,7 @@ const Login = () => {
           ¿No tiene una cuenta? Regístrese
         </Link>
 
-        {loading ? (
-          <MuiBox style={{ width: "100%", textAlign: "center" }}>
-            <CircularProgress />
-          </MuiBox>
-        ) : null}
+        {loading ? <Loader /> : null}
         {notification?.status && !loading ? (
           <ErrorMessage>
             {notification?.message

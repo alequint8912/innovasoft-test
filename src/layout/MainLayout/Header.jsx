@@ -7,6 +7,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Box } from "@mui/material";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import { useAuth } from "hooks";
+import { useGlobalState } from "hooks";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "drawerWidth",
@@ -40,7 +41,16 @@ const ToolbarSection = styled(Box)(() => ({
 
 // eslint-disable-next-line react/prop-types
 const Header = ({ handleDrawerOpen, drawerWidth, open }) => {
-  const { user, logout } = useAuth();
+  const { cleanGlobalState } = useGlobalState();
+  const { getSession, logout } = useAuth();
+  const sessionStringify = getSession();
+  const { username } = JSON.parse(sessionStringify ?? "{}");
+
+  const handleLogout = () => {
+    cleanGlobalState();
+    logout();
+  };
+
   return (
     <AppBar position="static" open={open} drawerWidth={drawerWidth}>
       <Toolbar>
@@ -60,12 +70,12 @@ const Header = ({ handleDrawerOpen, drawerWidth, open }) => {
         </ToolbarSection>
         <ToolbarSection style={{ gap: 15 }}>
           <Typography variant="h6">
-            {user?.username ?? "Nombre de usuario"}
+            {username ?? "Nombre de usuario"}
           </Typography>
           <IconButton
             color="inherit"
             style={{ backgroundColor: "white" }}
-            onClick={() => logout()}
+            onClick={handleLogout}
           >
             <LogoutRoundedIcon style={{ color: "black" }} />
           </IconButton>

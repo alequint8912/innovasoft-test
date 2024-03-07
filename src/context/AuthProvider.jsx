@@ -5,7 +5,6 @@ import { axiosInstance } from "api";
 export const AuthContext = createContext();
 
 const initialState = {
-  user: null,
   loading: false,
   isLogin: false,
   isLogout: true,
@@ -27,8 +26,8 @@ const AuthProvider = ({ children }) => {
     await axiosInstance
       .post("/Authenticate/login", { username, password })
       .then((response) => {
-        const { token, expiration } = response?.data;
-        setSession({ token, expiration });
+        const { token, expiration, userid, username } = response?.data;
+        setSession({ token, expiration, userid, username });
         dispatch({
           type: "LOGIN",
           payload: {
@@ -41,7 +40,7 @@ const AuthProvider = ({ children }) => {
       })
       .catch((error) => {
         dispatch({
-          type: "SHOW_ERROR",
+          type: "SHOW_NOTIFICATION",
           payload: {
             status: error?.response?.data?.status,
             message: error?.response?.data?.title,
@@ -54,6 +53,7 @@ const AuthProvider = ({ children }) => {
     removeSession();
     dispatch({
       type: "LOGOUT",
+      payload: initialState,
     });
   };
 
@@ -73,7 +73,7 @@ const AuthProvider = ({ children }) => {
       .catch((error) => {
         console.log(error);
         dispatch({
-          type: "SHOW_ERROR",
+          type: "SHOW_NOTIFICATION",
           payload: {
             status: error?.response?.data?.status,
             message: error?.response?.data?.message,
@@ -89,7 +89,6 @@ const AuthProvider = ({ children }) => {
   };
 
   const contextValue = {
-    user: state.user,
     loading: state.loading,
     notification: state.notification,
     isLogin: state.isLogin,

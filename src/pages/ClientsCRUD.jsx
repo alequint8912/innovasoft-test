@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { styled } from "@mui/material/styles";
 import MuiBox from "@mui/material/Box";
 import { Divider, IconButton, TextField, Typography } from "@mui/material";
@@ -9,23 +9,22 @@ import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SearchIcon from "@mui/icons-material/Search";
 import ClientsTable from "components/Table";
-import { GlobalContext } from "context/GlobalState";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "hooks";
+import { Loader } from "components";
+import { useGlobalState } from "hooks";
 
 const MainContainer = styled(MuiBox)(() => ({
   width: "100%",
   height: "100%",
 }));
 const Content = styled(CardContent)(() => ({
-  // paddingInline: 0,
-  // borderBottom: "1px solid gray",
   width: "100%",
   height: "100%",
 }));
 
 const FilterContent = styled(CardContent)(() => ({
-  // borderBottom: "1px solid gray",
   display: "flex",
   gap: 10,
   alignItems: "center",
@@ -68,8 +67,10 @@ const FilterButton = styled(IconButton)(() => ({
 }));
 
 const ClientsCRUD = () => {
-  const { persons, loadingPersons, getPersons } = useContext(GlobalContext);
-  const [filteredPersons, setFilteredPersons] = useState(persons);
+  const { clients, loading, getClients, notification } = useGlobalState();
+  const { getSession } = useAuth();
+  const sessionStringify = getSession();
+  const { userid } = JSON.parse(sessionStringify ?? "{}");
 
   const nameRef = useRef(null);
   const identificationRef = useRef(null);
@@ -85,31 +86,47 @@ const ClientsCRUD = () => {
   };
 
   useEffect(() => {
-    if (!persons) getPersons();
-    else setFilteredPersons(persons);
-  }, [persons]);
+    if (!clients) {
+      getClients({ userid, identificacion: null, nombre: null });
+    }
+  }, []);
 
   const handleFilter = () => {
     const identification =
       identificationRef.current.children[1].children[0].value;
     const name = nameRef.current.children[1].children[0].value;
 
-    if (identification || name) {
-      const lowerName = name.toLowerCase();
-      const lowerIdentification = identification.toLowerCase();
-      const filterResult = persons.filter(({ identificacion, nombre }) => {
-        const identificacionLower = identificacion.toLowerCase();
-        const nombreLower = nombre.toLowerCase();
-        return (
-          identificacionLower.includes(lowerIdentification) &&
-          nombreLower.includes(lowerName)
-        );
-      });
+    getClients({
+      userid,
+      identificacion: identification,
+      nombre: name,
+    });
+  };
 
-      setFilteredPersons(filterResult);
-    } else {
-      setFilteredPersons(persons);
-    }
+  const renderClientsTable = () => {
+    return clients?.length > 0 ? (
+      <ClientsTable clients={clients} />
+    ) : !loading ? (
+      <Typography variant="h6">No se encontraron clientes</Typography>
+    ) : null;
+  };
+
+  const renderNotification = () => {
+    const status = notification?.status;
+    const messageByStatus = {
+      Success: (
+        <Typography variant="h6" style={{ color: "green" }}>
+          {notification.message}
+        </Typography>
+      ),
+      Error: (
+        <Typography variant="h6" style={{ color: "red" }}>
+          {notification.message}
+        </Typography>
+      ),
+    };
+
+    return messageByStatus[status];
   };
 
   return (
@@ -160,11 +177,9 @@ const ClientsCRUD = () => {
         </FilterContent>
         <Divider />
         <TableContainer>
-          {filteredPersons && !loadingPersons ? (
-            <ClientsTable persons={filteredPersons} />
-          ) : (
-            <Typography variant="h1">LOADING...</Typography>
-          )}
+          {clients ? renderClientsTable() : null}
+          {loading ? <Loader /> : null}
+          {notification ? renderNotification() : null}
         </TableContainer>
       </Card>
     </MainContainer>

@@ -5,7 +5,7 @@ export const authReducer = (state, action) => {
         ...state,
         login: true,
         logout: false,
-        user: action.payload.user,
+
         loading: false,
         notification: {
           status: "Success",
@@ -14,14 +14,12 @@ export const authReducer = (state, action) => {
       };
     case "LOGOUT":
       return {
-        ...state,
-        login: false,
-        logout: true,
-        user: null,
-        notification: {
-          status: "Success",
-          message: "Ha salido del sistema exitosamente",
-        },
+        ...action?.payload,
+
+        // notification: {
+        //   status: "Success",
+        //   message: "Ha salido del sistema exitosamente",
+        // },
       };
     case "REGISTER_USER": {
       return {
@@ -36,7 +34,7 @@ export const authReducer = (state, action) => {
         loading: true,
       };
     }
-    case "SHOW_ERROR": {
+    case "SHOW_NOTIFICATION": {
       return {
         ...state,
         loading: false,

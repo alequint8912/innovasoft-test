@@ -1,10 +1,11 @@
 // src/context/GlobalState.js
 import { createContext, useReducer } from "react";
 import appReducer from "./PersonReducer";
+import { axiosInstance } from "api";
 
 const initialState = {
-  persons: null,
-  loadingPersons: false,
+  clients: null,
+  loading: false,
   notification: null,
 };
 
@@ -166,18 +167,30 @@ export const GlobalContext = createContext(initialState);
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(appReducer, initialState);
 
-  function getPersons() {
-    setTimeout(() => {
-      dispatch({
-        type: "GET_PERSONS_SUCCESS",
-        payload: mockPersons,
-      });
-    }, [3000]);
-
+  const getClients = async ({ userid, identificacion, nombre }) => {
     dispatch({
-      type: "PERSONS_LOADING",
+      type: "LOADING",
     });
-  }
+    await axiosInstance
+      .post("/Cliente/Listado", { usuarioId: userid, identificacion, nombre })
+      .then((response) => {
+        dispatch({
+          type: "LIST_CLIENTS_SUCCESS",
+          payload: response?.data,
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: "LIST_CLIENTS_FAIL",
+          payload: {
+            notification: {
+              status: "Error",
+              message: "Upss... Tenemos un error.",
+            },
+          },
+        });
+      });
+  };
 
   function addPerson(person) {
     setTimeout(() => {
@@ -187,7 +200,7 @@ export const GlobalProvider = ({ children }) => {
       });
     }, [3000]);
     dispatch({
-      type: "PERSONS_LOADING",
+      type: "LOADING",
     });
   }
 
@@ -199,7 +212,7 @@ export const GlobalProvider = ({ children }) => {
       });
     }, [3000]);
     dispatch({
-      type: "PERSONS_LOADING",
+      type: "LOADING",
     });
   }
 
@@ -211,7 +224,7 @@ export const GlobalProvider = ({ children }) => {
       });
     }, [3000]);
     dispatch({
-      type: "PERSONS_LOADING",
+      type: "LOADING",
     });
   }
 
@@ -221,17 +234,24 @@ export const GlobalProvider = ({ children }) => {
     });
   }
 
+  const cleanGlobalState = () => {
+    dispatch({
+      type: "CLEAN_STATE",
+    });
+  };
+
   return (
     <GlobalContext.Provider
       value={{
-        persons: state.persons,
-        loadingPersons: state.loadingPersons,
+        clients: state.clients,
+        loading: state.loading,
         notification: state.notification,
         addPerson,
         editPerson,
         removePerson,
-        getPersons,
+        getClients,
         cleanNotification,
+        cleanGlobalState,
       }}
     >
       {children}

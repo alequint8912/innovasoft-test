@@ -7,7 +7,7 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import { GlobalContext } from "context/GlobalState";
+import { GlobalContext } from "context/GlobalProvider";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ImageLoader from "components/ImageLoader";
@@ -69,7 +69,7 @@ const FormInput = styled(TextField)(() => ({
 const ClientMaintenance = () => {
   const { clientId } = useParams();
   const navigate = useNavigate();
-  const { persons, loadingPersons, getPersons, editPerson, addPerson } =
+  const { clients, loading, getClients, editPerson, addPerson } =
     useContext(GlobalContext);
   const [personBase64Image, setPersonBase64Image] = useState(null);
   const [errors, setErrors] = useState(null);
@@ -79,7 +79,7 @@ const ClientMaintenance = () => {
   };
 
   useEffect(() => {
-    if (!persons) getPersons();
+    if (!clients) getClients();
   }, []);
 
   const identificationRef = useRef(null);
@@ -198,7 +198,7 @@ const ClientMaintenance = () => {
 
   const renderForm = () => {
     const currentPerson = clientId
-      ? persons?.find(({ _id }) => clientId === _id)
+      ? clients?.find(({ _id }) => clientId === _id)
       : null;
     return (
       <>
@@ -373,10 +373,10 @@ const ClientMaintenance = () => {
 
   const render = () => {
     if (clientId) {
-      if (persons && !loadingPersons) return renderForm();
+      if (clients && !loading) return renderForm();
       else return <Typography variant="h2">LOADING...</Typography>;
     } else {
-      if (!loadingPersons) return renderForm();
+      if (!loading) return renderForm();
       else return <Typography variant="h2">LOADING...</Typography>;
     }
   };

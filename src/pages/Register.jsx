@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import * as yup from "yup";
+import { Loader } from "components";
 
 const MainContainer = styled(Box)(() => ({
   display: "flex",
@@ -143,11 +144,7 @@ const RegisterUser = () => {
         <SubmitButton variant="contained" onClick={handleSubmit}>
           REGISTRARME
         </SubmitButton>
-        {loading ? (
-          <Box style={{ width: "100%", textAlign: "center" }}>
-            <CircularProgress />
-          </Box>
-        ) : null}
+        {loading ? <Loader /> : null}
         {notification?.status && !loading ? (
           <ErrorMessage
             style={{

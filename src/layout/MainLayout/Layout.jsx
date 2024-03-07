@@ -8,7 +8,7 @@ import Sidebar from "./Sidebar";
 import Box from "@mui/material/Box";
 import { Snackbar } from "@mui/material";
 
-import { GlobalContext } from "context/GlobalState";
+import { GlobalContext } from "context/GlobalProvider";
 import { useContext } from "react";
 
 const drawerWidth = 400;

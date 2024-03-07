@@ -9,7 +9,7 @@ import { IconButton } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import styled from "@emotion/styled";
 import { memo, useContext } from "react";
-import { GlobalContext } from "context/GlobalState";
+import { GlobalContext } from "context/GlobalProvider";
 import { useNavigate } from "react-router-dom";
 
 const HeadCell = styled(TableCell)(() => ({
@@ -28,7 +28,7 @@ const BodyCell = styled(TableCell)(() => ({
   border: "1px solid #eef0f2",
 }));
 
-function ClientsTable({ persons }) {
+function ClientsTable({ clients }) {
   const { removePerson } = useContext(GlobalContext);
 
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ function ClientsTable({ persons }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {persons.map(({ _id, identificacion, nombre, apellidos }, index) => (
+          {clients.map(({ _id, identificacion, nombre, apellidos }, index) => (
             <TableRow
               key={_id}
               sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
