@@ -87,7 +87,7 @@ const ClientsCRUD = () => {
 
   useEffect(() => {
     if (!clients) {
-      getClients({ userid, identificacion: null, nombre: null });
+      getClients({ userid, identificacion: "", nombre: "" });
     }
   }, []);
 
@@ -98,8 +98,8 @@ const ClientsCRUD = () => {
 
     getClients({
       userid,
-      identificacion: identification,
-      nombre: name,
+      identificacion: identification ?? "",
+      nombre: name ?? "",
     });
   };
 

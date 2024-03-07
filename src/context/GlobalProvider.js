@@ -5,6 +5,7 @@ import { axiosInstance } from "api";
 
 const initialState = {
   clients: null,
+  currentClient: null,
   interests: null,
   loading: false,
   notification: null,
@@ -193,7 +194,7 @@ export const GlobalProvider = ({ children }) => {
       });
   };
 
-  const getUserById = async ({ clientId }) => {
+  const getClientById = async ({ clientId }) => {
     dispatch({
       type: "LOADING",
     });
@@ -203,7 +204,7 @@ export const GlobalProvider = ({ children }) => {
         dispatch({
           type: "GET_USER_BY_ID_SUCCESS",
           payload: {
-            user: response?.data,
+            client: response?.data,
           },
         })
       )
@@ -278,17 +279,36 @@ export const GlobalProvider = ({ children }) => {
       });
   };
 
-  function editPerson(person) {
-    setTimeout(() => {
-      dispatch({
-        type: "EDIT_PERSON",
-        payload: person,
-      });
-    }, [3000]);
+  const editClient = async ({ userid, client }) => {
     dispatch({
       type: "LOADING",
     });
-  }
+
+    await axiosInstance
+      .post("/Cliente/Actualizar", { usuarioId: userid, ...client })
+      .then((response) =>
+        dispatch({
+          type: "EDIT_CLIENT_SUCCESS",
+          payload: {
+            notification: {
+              status: "Success",
+              message: "Cliente editado correctamente",
+            },
+          },
+        })
+      )
+      .catch((error) => {
+        dispatch({
+          type: "EDIT_CLIENT_FAIL",
+          payload: {
+            notification: {
+              status: "Error",
+              message: "Hubo un error al editar este cliente.",
+            },
+          },
+        });
+      });
+  };
 
   function removePerson(id) {
     setTimeout(() => {
@@ -314,21 +334,30 @@ export const GlobalProvider = ({ children }) => {
     });
   };
 
+  const cleanPartialState = (stateElements) => {
+    dispatch({
+      type: "CLEAN_PARTIAL_STATE",
+      payload: stateElements,
+    });
+  };
+
   return (
     <GlobalContext.Provider
       value={{
         clients: state.clients,
+        currentClient: state.currentClient,
         interests: state.interests,
         loading: state.loading,
         notification: state.notification,
         addClient,
-        editPerson,
+        editClient,
         removePerson,
         getClients,
         getInterests,
-        getUserById,
+        getClientById,
         cleanNotification,
         cleanGlobalState,
+        cleanPartialState,
       }}
     >
       {children}

@@ -74,14 +74,15 @@ const ClientMaintenance = () => {
   const navigate = useNavigate();
 
   const {
-    clients,
     interests,
     loading,
-    getUserById,
-    editPerson,
+    getClientById,
+    editClient,
     addClient,
     getInterests,
     notification,
+    currentClient,
+    cleanPartialState,
   } = useGlobalState();
   const { getSession } = useAuth();
   const sessionStringify = getSession();
@@ -95,8 +96,10 @@ const ClientMaintenance = () => {
   };
 
   useEffect(() => {
-    if (!clients && clientId) getUserById({ clientId });
+    if (!currentClient && clientId) getClientById({ clientId });
     if (!interests) getInterests();
+
+    return () => cleanPartialState({ currentClient: null, notification: null });
   }, []);
 
   const identificationRef = useRef(null);
@@ -111,7 +114,10 @@ const ClientMaintenance = () => {
   const addressRef = useRef(null);
   const resenhaRef = useRef(null);
 
-  const defaultDate = new Date().toISOString().slice(0, 10);
+  const getDate = (dateString = null) =>
+    dateString
+      ? new Date(dateString).toISOString().slice(0, 10)
+      : new Date().toISOString().slice(0, 10);
 
   const handleSave = () => {
     const identification =
@@ -139,7 +145,7 @@ const ClientMaintenance = () => {
       fAfiliacion: assignYear,
       sexo: gender,
       resennaPersonal: resenha,
-      imagen: personBase64Image ?? "imagen",
+      imagen: personBase64Image ?? "",
       interesFK: interest,
     };
 
@@ -188,7 +194,7 @@ const ClientMaintenance = () => {
       .validate(client, { abortEarly: false })
       .then(() => {
         if (clientId) {
-          editPerson(client);
+          editClient({ userid, client });
         } else {
           addClient({ userid, client });
         }
@@ -230,9 +236,6 @@ const ClientMaintenance = () => {
   };
 
   const renderForm = () => {
-    const currentPerson = clientId
-      ? clients?.find(({ id }) => clientId === id)
-      : null;
     return (
       <>
         <Content>
@@ -240,7 +243,7 @@ const ClientMaintenance = () => {
             <HeadActionsContainer>
               <ImageLoader
                 onLoad={handleImageLoad}
-                base64Image={currentPerson?.imagen}
+                base64Image={currentClient?.imagen}
               />
               <HeadTitle variant="h5">Mantenimiento de cliente</HeadTitle>
             </HeadActionsContainer>
@@ -274,7 +277,7 @@ const ClientMaintenance = () => {
               label={errors?.identificacion ?? "Identificación"}
               variant="outlined"
               ref={identificationRef}
-              defaultValue={currentPerson?.identificacion}
+              defaultValue={currentClient?.identificacion}
             />
             <FormInput
               disabled={loading}
@@ -283,7 +286,7 @@ const ClientMaintenance = () => {
               label={errors?.nombre ?? "Nombre"}
               variant="outlined"
               ref={nameRef}
-              defaultValue={currentPerson?.nombre}
+              defaultValue={currentClient?.nombre}
             />
             <FormInput
               disabled={loading}
@@ -292,7 +295,7 @@ const ClientMaintenance = () => {
               label={errors?.apellidos ?? "Apellidos"}
               variant="outlined"
               ref={lastnameRef}
-              defaultValue={currentPerson?.apellidos}
+              defaultValue={currentClient?.apellidos}
             />
           </FormRow>
           <FormRow>
@@ -303,7 +306,7 @@ const ClientMaintenance = () => {
               select
               label={errors?.sexo ?? "Sexo"}
               ref={genderRef}
-              defaultValue={currentPerson?.sexo ?? "F"}
+              defaultValue={currentClient?.sexo ?? "F"}
             >
               <MenuItem key={"F"} value="F">
                 Femenino
@@ -319,7 +322,7 @@ const ClientMaintenance = () => {
               label={errors?.fNacimiento ?? "Fecha de nacimiento"}
               type="date"
               id="birthYear"
-              defaultValue={currentPerson?.fNacimiento ?? defaultDate}
+              defaultValue={getDate(currentClient?.fNacimiento)}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -331,7 +334,7 @@ const ClientMaintenance = () => {
               type="date"
               id="assignYear"
               label={errors?.fAfiliacion ?? "Fecha de afiliación"}
-              defaultValue={currentPerson?.fAfiliacion ?? defaultDate}
+              defaultValue={getDate(currentClient?.fAfiliacion)}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -346,7 +349,7 @@ const ClientMaintenance = () => {
               label={errors?.celular ?? "Teléfono"}
               variant="outlined"
               ref={phoneRef}
-              defaultValue={currentPerson?.celular}
+              defaultValue={currentClient?.telefonoCelular}
             />
             <FormInput
               disabled={loading}
@@ -355,7 +358,7 @@ const ClientMaintenance = () => {
               label={errors?.otroTelefono ?? "Teléfono otro"}
               variant="outlined"
               ref={otherPhoneRef}
-              defaultValue={currentPerson?.otroTelefono}
+              defaultValue={currentClient?.otroTelefono}
             />
             <FormInput
               disabled={loading}
@@ -363,7 +366,7 @@ const ClientMaintenance = () => {
               id="interest"
               select
               label={errors?.interesesId ?? "Interes"}
-              defaultValue={currentPerson?.interesesId ?? interests?.[0]?.id}
+              defaultValue={currentClient?.interesesId ?? interests?.[0]?.id}
               ref={interestRef}
             >
               {interests?.map(({ id, descripcion }) => (
@@ -381,7 +384,7 @@ const ClientMaintenance = () => {
               label={errors?.direccion ?? "Dirección"}
               variant="outlined"
               ref={addressRef}
-              defaultValue={currentPerson?.direccion}
+              defaultValue={currentClient?.direccion}
             />
           </FormRow>
           <FormRow>
@@ -392,7 +395,7 @@ const ClientMaintenance = () => {
               label={errors?.resenaPersonal ?? "Reseña personal"}
               variant="outlined"
               ref={resenhaRef}
-              defaultValue={currentPerson?.resenaPersonal}
+              defaultValue={currentClient?.resenaPersonal}
             />
           </FormRow>
         </FormContainer>
@@ -402,7 +405,7 @@ const ClientMaintenance = () => {
 
   const render = () => {
     if (clientId) {
-      if (clients && interests) return renderForm();
+      if (currentClient && interests) return renderForm();
       return;
     } else {
       if (interests) return renderForm();

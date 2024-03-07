@@ -15,18 +15,19 @@ export default function appReducer(state, action) {
         loading: false,
         notification: action?.payload?.notification,
       };
-    case "EDIT_PERSON":
+    case "EDIT_CLIENT_SUCCESS":
       return {
         ...state,
-        clients: state.clients.map((person) =>
-          person.id === action.payload.id ? action.payload : person
-        ),
         loading: false,
-        notification: {
-          type: "success",
-          message: "Persona editada correctamente",
-        },
+        notification: action?.payload?.notification,
       };
+    case "EDIT_CLIENT_FAIL":
+      return {
+        ...state,
+        loading: false,
+        notification: action?.payload?.notification,
+      };
+
     case "REMOVE_PERSON":
       return {
         ...state,
@@ -54,7 +55,7 @@ export default function appReducer(state, action) {
       return {
         ...state,
         loading: false,
-        clients: [...state.clients, action.payload?.user],
+        currentClient: action.payload?.client,
       };
     }
     case "GET_USER_BY_ID_FAIL": {
@@ -101,6 +102,11 @@ export default function appReducer(state, action) {
         clients: null,
         loading: false,
         notification: null,
+      };
+    case "CLEAN_PARTIAL_STATE":
+      return {
+        ...state,
+        ...action.payload,
       };
     default:
       return state;

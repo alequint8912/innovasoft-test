@@ -51,7 +51,7 @@ const ImageLoader = ({ onLoad, base64Image }) => {
       {previewSource || base64Image ? (
         <figure style={{ position: "relative" }}>
           <img
-            src={previewSource ?? base64Image}
+            src={previewSource || base64Image}
             alt="chosen"
             style={{
               height: "102px",
