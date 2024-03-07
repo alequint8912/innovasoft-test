@@ -27,6 +27,21 @@ export default function appReducer(state, action) {
         loading: false,
         notification: action?.payload?.notification,
       };
+    case "REMOVE_CLIENT_SUCCESS":
+      return {
+        ...state,
+        loading: false,
+        clients: state?.clients.filter(
+          (client) => client.id !== action.payload?.clientId
+        ),
+        notification: action?.payload?.notification,
+      };
+    case "REMOVE_CLIENT_FAIL":
+      return {
+        ...state,
+        loading: false,
+        notification: action?.payload?.notification,
+      };
 
     case "REMOVE_PERSON":
       return {

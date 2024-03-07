@@ -291,6 +291,7 @@ export const GlobalProvider = ({ children }) => {
           type: "EDIT_CLIENT_SUCCESS",
           payload: {
             notification: {
+              client,
               status: "Success",
               message: "Cliente editado correctamente",
             },
@@ -310,17 +311,37 @@ export const GlobalProvider = ({ children }) => {
       });
   };
 
-  function removePerson(id) {
-    setTimeout(() => {
-      dispatch({
-        type: "REMOVE_PERSON",
-        payload: id,
-      });
-    }, [3000]);
+  const removeClient = async ({ userid, clientId }) => {
     dispatch({
       type: "LOADING",
     });
-  }
+
+    await axiosInstance
+      .delete(`/Cliente/Eliminar/${clientId}`)
+      .then((response) =>
+        dispatch({
+          type: "REMOVE_CLIENT_SUCCESS",
+          payload: {
+            clientId,
+            notification: {
+              status: "Success",
+              message: "Cliente eliminado correctamente",
+            },
+          },
+        })
+      )
+      .catch((error) => {
+        dispatch({
+          type: "REMOVE_CLIENT_FAIL",
+          payload: {
+            notification: {
+              status: "Error",
+              message: "Hubo un error al eliminar este cliente.",
+            },
+          },
+        });
+      });
+  };
 
   function cleanNotification() {
     dispatch({
@@ -351,7 +372,7 @@ export const GlobalProvider = ({ children }) => {
         notification: state.notification,
         addClient,
         editClient,
-        removePerson,
+        removeClient,
         getClients,
         getInterests,
         getClientById,

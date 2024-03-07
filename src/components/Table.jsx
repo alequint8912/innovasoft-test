@@ -8,9 +8,10 @@ import Paper from "@mui/material/Paper";
 import { IconButton } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import styled from "@emotion/styled";
-import { memo, useContext } from "react";
-import { GlobalContext } from "context/GlobalProvider";
+import { memo } from "react";
 import { useNavigate } from "react-router-dom";
+import { useGlobalState } from "hooks";
+import { useAuth } from "hooks";
 
 const HeadCell = styled(TableCell)(() => ({
   paddingBlock: 10,
@@ -29,7 +30,10 @@ const BodyCell = styled(TableCell)(() => ({
 }));
 
 function ClientsTable({ clients }) {
-  const { removePerson } = useContext(GlobalContext);
+  const { removeClient } = useGlobalState();
+  const { getSession } = useAuth();
+  const sessionStringify = getSession();
+  const { userid } = JSON.parse(sessionStringify ?? "{}");
 
   const navigate = useNavigate();
 
@@ -37,7 +41,7 @@ function ClientsTable({ clients }) {
     if (
       window.confirm(`Esta seguro de eliminar el usuario ${name} ${lastName}?`)
     )
-      removePerson(id);
+      removeClient({ userid, clientId: id });
   };
 
   const handleEdit = (id) => {
@@ -70,7 +74,7 @@ function ClientsTable({ clients }) {
                 </IconButton>
                 <IconButton
                   onClick={() =>
-                    handleRemove({ id: id, name: nombre, lastName: apellidos })
+                    handleRemove({ id, name: nombre, lastName: apellidos })
                   }
                 >
                   <Delete />

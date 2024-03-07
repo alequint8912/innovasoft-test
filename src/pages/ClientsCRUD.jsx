@@ -1,7 +1,14 @@
 import { useRef } from "react";
 import { styled } from "@mui/material/styles";
 import MuiBox from "@mui/material/Box";
-import { Divider, IconButton, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Divider,
+  IconButton,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
@@ -67,7 +74,8 @@ const FilterButton = styled(IconButton)(() => ({
 }));
 
 const ClientsCRUD = () => {
-  const { clients, loading, getClients, notification } = useGlobalState();
+  const { clients, loading, getClients, notification, cleanNotification } =
+    useGlobalState();
   const { getSession } = useAuth();
   const sessionStringify = getSession();
   const { userid } = JSON.parse(sessionStringify ?? "{}");
@@ -86,9 +94,7 @@ const ClientsCRUD = () => {
   };
 
   useEffect(() => {
-    if (!clients) {
-      getClients({ userid, identificacion: "", nombre: "" });
-    }
+    getClients({ userid, identificacion: "", nombre: "" });
   }, []);
 
   const handleFilter = () => {
@@ -112,21 +118,15 @@ const ClientsCRUD = () => {
   };
 
   const renderNotification = () => {
-    const status = notification?.status;
-    const messageByStatus = {
-      Success: (
-        <Typography variant="h6" style={{ color: "green" }}>
-          {notification.message}
-        </Typography>
-      ),
-      Error: (
-        <Typography variant="h6" style={{ color: "red" }}>
-          {notification.message}
-        </Typography>
-      ),
-    };
-
-    return messageByStatus[status];
+    return (
+      <Snackbar
+        open={true}
+        autoHideDuration={4000}
+        onClose={cleanNotification}
+        message={notification.message}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      />
+    );
   };
 
   return (
@@ -176,12 +176,12 @@ const ClientsCRUD = () => {
           </FilterButton>
         </FilterContent>
         <Divider />
-        <TableContainer>
-          {clients ? renderClientsTable() : null}
-          {loading ? <Loader /> : null}
-          {notification ? renderNotification() : null}
-        </TableContainer>
+        <TableContainer>{clients ? renderClientsTable() : null}</TableContainer>
       </Card>
+      <Box style={{ paddingTop: 30, textAlign: "center" }}>
+        {notification ? renderNotification() : null}
+        {loading ? <Loader /> : null}
+      </Box>
     </MainContainer>
   );
 };
