@@ -4,7 +4,9 @@ export default function appReducer(state, action) {
       return {
         ...state,
         loading: false,
-        clients: [...state.clients, action.payload?.newUser],
+        clients: state?.clients
+          ? [...state.clients, action.payload?.newUser]
+          : [action.payload?.newUser],
         notification: action?.payload?.notification,
       };
     case "ADD_CLIENT_FAIL":

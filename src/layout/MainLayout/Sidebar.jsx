@@ -14,6 +14,7 @@ import { styled } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
 import UserIcon from "../../assets/images/user-svgrepo-com.svg";
 import { Link } from "react-router-dom";
+import { useAuth } from "hooks";
 
 const ItemsContainer = styled(Box)(() => ({
   width: "100%",
@@ -37,6 +38,9 @@ const MenuLabel = styled(Typography)(() => ({
 
 const Sidebar = ({ drawerWidth, handleDrawerClose, open }) => {
   const theme = useTheme();
+  const { getSession } = useAuth();
+  const sessionStringify = getSession();
+  const { username } = JSON.parse(sessionStringify ?? "{}");
 
   return (
     <Drawer
@@ -72,7 +76,7 @@ const Sidebar = ({ drawerWidth, handleDrawerClose, open }) => {
           }}
         />
 
-        <UserName variant="h5">Nombre de Usuario</UserName>
+        <UserName variant="h5">{username}</UserName>
       </ItemsContainer>
       <Divider />
       <MenuLabel variant="h5">MENU</MenuLabel>

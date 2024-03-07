@@ -139,7 +139,7 @@ const ClientMaintenance = () => {
       fAfiliacion: assignYear,
       sexo: gender,
       resennaPersonal: resenha,
-      imagen: personBase64Image,
+      imagen: personBase64Image ?? "imagen",
       interesFK: interest,
     };
 
