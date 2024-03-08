@@ -9,7 +9,6 @@ import {
   Button,
   InputAdornment,
   Box,
-  CircularProgress,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import * as yup from "yup";
@@ -79,7 +78,7 @@ const RegisterUser = () => {
         .required("La contraseña es requerida")
         .min(8, "La contraseña debe tener al menos 8 caracteres")
         .matches(
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[^ ]{8,}$/,
           "La contraseña debe contener al menos una letra mayúscula, una letra minúscula y un número"
         ),
     });
