@@ -53,9 +53,11 @@ function ClientsTable({ clients }) {
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <HeadCell>Identificación</HeadCell>
+            <HeadCell width={200}>Identificación</HeadCell>
             <HeadCell align="left">Nombre completo</HeadCell>
-            <HeadCell align="left">Acciones</HeadCell>
+            <HeadCell align="left" width={125}>
+              Acciones
+            </HeadCell>
           </TableRow>
         </TableHead>
         <TableBody>
